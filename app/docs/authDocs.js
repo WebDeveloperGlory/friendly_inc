@@ -148,7 +148,8 @@
  *                 example: "123 Main Street"
  *               store_category:
  *                 type: string
- *                 example: "Electronics"
+ *                 enum: ['resturant', 'fashion', 'electronics', 'groceries', 'skincare']
+ *                 example: "electronics"
  *     responses:
  *       200:
  *         description: Seller account created
