@@ -11,7 +11,7 @@
 
 /**
  * @swagger
- * /api/auth/initiate-signup:
+ * /auth/initiate-signup:
  *   post:
  *     summary: Start user sign-up by generating an OTP
  *     tags: [Authentication (Public)]
@@ -49,7 +49,7 @@
 
 /**
  * @swagger
- * /api/auth/complete-signup:
+ * /auth/complete-signup:
  *   post:
  *     summary: Complete sign-up using OTP and create a user account
  *     tags: [Authentication (Public)]
@@ -105,7 +105,7 @@
 
 /**
  * @swagger
- * /api/auth/register/seller:
+ * /auth/register/seller:
  *   post:
  *     summary: Register a seller account
  *     tags: [Authentication (Public)]
@@ -167,7 +167,7 @@
 
 /**
  * @swagger
- * /api/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Log in as a user
  *     tags: [Authentication (Public)]
@@ -210,7 +210,7 @@
 
 /**
  * @swagger
- * /api/auth/complete-password-reset:
+ * /auth/complete-password-reset:
  *   post:
  *     summary: Complete password reset using OTP
  *     tags: [Authentication (User)]
@@ -254,7 +254,7 @@
 
 /**
  * @swagger
- * /api/auth/change-password:
+ * /auth/change-password:
  *   post:
  *     summary: Change current user's password
  *     tags: [Authentication (User)]
@@ -298,7 +298,7 @@
 
 /**
  * @swagger
- * /api/auth/generate-otp:
+ * /auth/generate-otp:
  *   post:
  *     summary: Generate a new OTP
  *     tags: [Authentication (User)]
@@ -321,7 +321,7 @@
 
 /**
  * @swagger
- * /api/auth/profile:
+ * /auth/profile:
  *   get:
  *     summary: Retrieve current user's profile
  *     tags: [Authentication (User)]
