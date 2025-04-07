@@ -104,6 +104,7 @@ exports.initiatePasswordReset = async ({ userId }) => {
     const otp = setOtp( foundUser );
     await foundUser.save();
     // Send otp to users email
+    sendOtpEmail( foundUser.email, otp );
 
     // Return success
     return { success: true, message: 'OTP generated', data: otp };
@@ -163,6 +164,7 @@ exports.resendOtp = async ({ userId }) => {
     const otp = setOtp( foundUser );
     await foundUser.save();
     // Send otp to users email
+    sendOtpEmail( foundUser.email, otp );
 
     // Return success
     return { success: true, message: 'OTP generated', data: otp };
