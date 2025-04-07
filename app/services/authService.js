@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const { setOtp, verifyOtp } = require('../utils/otpUtils');
+const { setOtp, verifyOtp, sendOtpEmail } = require('../utils/otpUtils');
 const { generateToken } = require('../utils/jwtUtils');
 
 exports.initiateEnrollment = async ({ name, email }) => {
@@ -13,6 +13,8 @@ exports.initiateEnrollment = async ({ name, email }) => {
         // Regenerate Otp
         otp = setOtp( foundUser );
         await foundUser.save();
+        // Send otp to user
+        sendOtpEmail( email, otp );
         return { success: true, message: 'OTP regenerated', data: otp };
     }
 
@@ -20,6 +22,9 @@ exports.initiateEnrollment = async ({ name, email }) => {
     const newUser = await db.User.create({ name, email });
     otp = setOtp( newUser );
     await newUser.save();
+
+    // Send otp to email
+    sendOtpEmail( email, otp );
 
     // Return success
     return { success: true, message: 'OTP sent to email', data: otp };
