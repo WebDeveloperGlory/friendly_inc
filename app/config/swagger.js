@@ -15,10 +15,10 @@ const swaggerDefinitionV1 = JSON.parse(JSON.stringify({
       url: `http://localhost:${APP_PORT}/api`,
       description: 'Local Development server',
     },
-    // {
-    //   url: `https://fupre-sports-media-backend.onrender.com/api`,
-    //   description: 'Production server',
-    // },
+    {
+      url: `https://friendly-inc.onrender.com/api`,
+      description: 'Production server',
+    },
   ],
   components: {
     securitySchemes: {
