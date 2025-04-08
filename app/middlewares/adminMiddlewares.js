@@ -6,7 +6,8 @@ const hasAdminPermissions = async ( req, res, next ) => {
 
     try {
         const foundUser = await db.Admin.findById( userId );
-        if( !foundUser ) return error( res, '
+        if( !foundUser ) return error( res, 'Invalid User Permissions', 401 );
+
         next();            
     } catch ( err ) {
         return serverError( res, err );
