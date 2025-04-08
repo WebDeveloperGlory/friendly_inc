@@ -5,6 +5,8 @@ const { swaggerSpecV1 } = require('./app/config/swagger');
 const { PORT, ALLOWED_ORIGINS } = require('./app/config/env');
 
 const authRoutes = require('./app/routes/authRoutes');
+const adminRoutes = require('./app/routes/adminRoutes');
+const riderRoutes = require('./app/routes/riderRoutes');
 
 const app = express();
 const APP_PORT = PORT;
@@ -37,6 +39,8 @@ app.get( '/', ( req, res ) => {
 
 // ROUTES //
 app.use( '/api/auth', authRoutes );
+app.use( '/api/admin', adminRoutes );
+app.use( '/api/rider', riderRoutes );
 // END OF ROUTES //
 
 app.listen( PORT, () => {
