@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-exports.getAdminDashboardDetails = async ({}) => {
+exports.getAdminDashboardDetails = async () => {
     const registeredUserCount = await db.User.countDocuments();
     const registeredAdminCount = await db.Admin.countDocuments();
     const registeredRiders = await db.Rider.countDocuments();
@@ -66,8 +66,8 @@ exports.assignRidersToOrders = async ({ orderId }, { riderId }) => {
 
 exports.getPersonalDetails = async ({ userId }) => {
     // Get admin details
-    const foundAdmin = await db.Admin.findById( userId );
-    if( !foundAdmin ) return { success: false, message: 'Invalid Admin' }.select('-password');
+    const foundAdmin = await db.Admin.findById( userId ).select('-password');
+    if( !foundAdmin ) return { success: false, message: 'Invalid Admin' };
 
     // Return success
     return { success: true, message: 'Admin Details Acquired', data: foundAdmin}
