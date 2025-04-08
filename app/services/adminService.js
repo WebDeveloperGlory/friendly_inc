@@ -64,19 +64,6 @@ exports.assignRidersToOrders = async ({ orderId }, { riderId }) => {
     }
 }
 
-exports.cancelOrder = async ({ orderId }) => {
-    // Update order_status
-    const updatedOrder = await db.Order.findByIdAndUpdate(
-        orderId,
-        { order_status: 'cancelled' },
-        { new: true }
-    );
-    if( !updatedOrder ) return { success: false, message: 'Invalid Order' };
-
-    // Return success
-    return { success: true, message: 'Order Cancelled', data: updatedOrder };
-}
-
 exports.getPersonalDetails = async ({ userId }) => {
     // Get admin details
     const foundAdmin = await db.Admin.findById( userId );
