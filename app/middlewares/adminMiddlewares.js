@@ -14,4 +14,4 @@ const hasAdminPermissions = async ( req, res, next ) => {
     }
 };
 
-module.exports = { authenticateUser };
+module.exports = { hasAdminPermissions };
