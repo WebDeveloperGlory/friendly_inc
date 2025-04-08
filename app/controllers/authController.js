@@ -27,18 +27,18 @@ exports.completeEnrollment = async ( req, res ) => {
     }
 }
 
-exports.registerSeller = async ( req, res ) => {
-    try {
-        const result = await authService.registerSeller( req.body );
+// exports.registerSeller = async ( req, res ) => {
+//     try {
+//         const result = await authService.registerSeller( req.body );
 
-        if( result.success ) {
-            return success( res, result.message, result.data );
-        }
-        return error( res, result.message );
-    } catch ( err ) {
-        return serverError( res, err );
-    }
-}
+//         if( result.success ) {
+//             return success( res, result.message, result.data );
+//         }
+//         return error( res, result.message );
+//     } catch ( err ) {
+//         return serverError( res, err );
+//     }
+// }
 
 exports.loginUser = async ( req, res ) => {
     try {
@@ -55,7 +55,7 @@ exports.loginUser = async ( req, res ) => {
 
 exports.initiatePasswordReset = async ( req, res ) => {
     try {
-        const result =  await authService.initiatePasswordReset( req.user );
+        const result =  await authService.initiatePasswordReset( req.body );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -67,7 +67,7 @@ exports.initiatePasswordReset = async ( req, res ) => {
 }
 exports.completePasswordReset = async ( req, res ) => {
     try {
-        const result = await authService.completePasswordReset( req.user, req.body );
+        const result = await authService.completePasswordReset( req.body );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -92,7 +92,20 @@ exports.changePassword = async ( req, res ) => {
 
 exports.resendOtp = async ( req, res ) => {
     try {
-        const result = await authService.resendOtp( req.user );
+        const result = await authService.resendOtp( req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.registerAdministratorOrRider = async ( req, res ) => {
+    try {
+        const result = await authService.registerAdministratorOrRider( req.body );
 
         if( result.success ) {
             return success( res, result.message, result.data );

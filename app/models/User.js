@@ -30,7 +30,6 @@ const userSchema = new Schema({
     },
     phone: {
         type: String,
-        unique: true
     },
     isActive: {
         type: Boolean,

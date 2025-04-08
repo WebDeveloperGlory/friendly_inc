@@ -61,23 +61,23 @@ exports.completeEnrollment = async ({ otp, email, password, gender, username, ph
     return { success: true, message: 'User Registered Successfully', data: user };
 }
 
-exports.registerSeller = async ({ personal_phone, personal_email, personal_name, store_name, public_phone, public_email, physical_location, store_category }) => {
-    // Create seller account
-    const createdSeller = await db.Seller.create({
-        personal_phone,
-        personal_email,
-        personal_name,
-        store_name,
-        public_phone,
-        public_email,
-        physical_location,
-        store_category
-    });
-    if( !createdSeller ) return { success: false, message: 'Seller Account Creation Failed' };
+// exports.registerSeller = async ({ personal_phone, personal_email, personal_name, store_name, public_phone, public_email, physical_location, store_category }) => {
+//     // Create seller account
+//     const createdSeller = await db.Seller.create({
+//         personal_phone,
+//         personal_email,
+//         personal_name,
+//         store_name,
+//         public_phone,
+//         public_email,
+//         physical_location,
+//         store_category
+//     });
+//     if( !createdSeller ) return { success: false, message: 'Seller Account Creation Failed' };
     
-    // Return success
-    return { success: true, message: 'Seller Account Created', data: createdSeller };
-}
+//     // Return success
+//     return { success: true, message: 'Seller Account Created', data: createdSeller };
+// }
 
 exports.loginUser = async ({ email, password }) => {
     // Check if user exists
@@ -95,9 +95,9 @@ exports.loginUser = async ({ email, password }) => {
     return { success: true, message: 'User Logged In', data: token };
 }
 
-exports.initiatePasswordReset = async ({ userId }) => {
+exports.initiatePasswordReset = async ({ email }) => {
     // Find user in database
-    const foundUser = await db.User.findById( userId );
+    const foundUser = await db.User.findOne( email );
     if( !foundUser ) return { success: false, message: 'User Not Found' };
 
     // Set OTP
@@ -110,9 +110,9 @@ exports.initiatePasswordReset = async ({ userId }) => {
     return { success: true, message: 'OTP generated', data: otp };
 }
 
-exports.completePasswordReset = async ( { userId }, { otp, newPassword, confirmNewPassword } ) => {
+exports.completePasswordReset = async ( { email, otp, newPassword, confirmNewPassword } ) => {
     // Find user in database
-    const foundUser = await db.User.findById( userId );
+    const foundUser = await db.User.findOne( email );
     if( !foundUser ) return { success: false, message: 'User Not Found' };
 
     // Check validity of otp
@@ -155,9 +155,9 @@ exports.changePassword = async ( { userId }, { oldPassword, newPassword, confirm
     return { success: true, message: 'Password Changed Successfully', data: null };
 }
 
-exports.resendOtp = async ({ userId }) => {
+exports.resendOtp = async ({ email }) => {
     // Find user in database
-    const foundUser = await db.User.findById( userId );
+    const foundUser = await db.User.findOne( email );
     if( !foundUser ) return { success: false, message: 'User Not Found' };
 
     // Set OTP
@@ -192,7 +192,23 @@ exports.registerAdministratorOrRider = async ({ name, username, password, phone_
 
     if( task === 'administrator' ) {
         registeredUser = await db.Admin.create({ name, username, phone_number });
+        registeredUser.passsword = password;
+        await registeredUser.save();
+    } else if( task === 'rider' ) {
+        registeredUser = await db.Rider.create({ name, username, phone_number });
+        registeredUser.password = password;
+        await registeredUser.save();
     }
+
+    const user = {
+        name: registeredUser.name, 
+        username: registeredUser.username, 
+        phone_number: registeredUser.phone_number,
+        isActive: task === 'rider' ? registeredUser.isActive : 'inapplicable'
+    }
+
+    // Return success
+    return { success: true, message: `${ task.toUpperCase() } Created`, data: user };
 }
 
 module.exports = exports;
