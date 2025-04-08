@@ -6,9 +6,9 @@ const { hasAdminPermissions } = require('../middlewares/adminMiddlewares');
 const router = Router();
 
 router.get( '/dashboard', authenticateUser, hasAdminPermissions, controller.getAdminDashboardDetails);
-router.get( '/profile', hasAdminPermissions, authenticateUser, controller.getPersonalDetails );
+router.get( '/profile', authenticateUser, hasAdminPermissions, controller.getPersonalDetails );
 router.put( '/profile', authenticateUser, hasAdminPermissions, controller.editPersonalDetails );
-router.post( '/register/staff', hasAdminPermissions, authenticateUser, controller.registerAdministratorOrRider );
+router.post( '/register/staff', authenticateUser, hasAdminPermissions, controller.registerAdministratorOrRider );
 router.post( '/assign-rider/:orderId', authenticateUser, hasAdminPermissions, controller.assignRidersToOrders );
 
 module.exports = router;
