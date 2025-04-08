@@ -9,6 +9,7 @@ mongoose.connect( URI )
     .catch( ( err ) => console.log( err ) );
 
 module.exports.Address = require('../models/Address');
+module.exports.Admin = require('../models/Admin');
 module.exports.Brand = require('../models/Brand');
 module.exports.Category = require('../models/Category');
 module.exports.Order = require('../models/Order');
