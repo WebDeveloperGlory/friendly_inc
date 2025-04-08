@@ -213,7 +213,7 @@
  * /auth/login/rider:
  *   post:
  *     summary: Rider login
- *     tags: [Authentication (Public)]
+ *     tags: [Authentication (Admin)]
  *     requestBody:
  *       required: true
  *       content:
