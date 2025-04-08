@@ -179,4 +179,20 @@ exports.getUserProfile = async ({ userId }) => {
     return { success: true, message: 'User Aquired', data: foundUser };
 }
 
+exports.registerAdministratorOrRider = async ({ name, username, password, phone_number, task }) => {
+    // Define accepted tasks and check if task was passed in
+    const acceptedTasks = ['administrator', 'rider']
+    if( !task || !acceptedTasks.includes( task ) ) return { success: false, message: 'Invalid Task' };
+
+    // Check if user passed in a password
+    if( !password ) return { success: false, message: 'Password Required' }
+
+    // Check task and register accordingly
+    let registeredUser;
+
+    if( task === 'administrator' ) {
+        registeredUser = await db.Admin.create({ name, username, phone_number });
+    }
+}
+
 module.exports = exports;
