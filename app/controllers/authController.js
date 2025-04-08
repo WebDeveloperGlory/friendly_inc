@@ -103,19 +103,6 @@ exports.resendOtp = async ( req, res ) => {
     }
 }
 
-exports.registerAdministratorOrRider = async ( req, res ) => {
-    try {
-        const result = await authService.registerAdministratorOrRider( req.body );
-
-        if( result.success ) {
-            return success( res, result.message, result.data );
-        }
-        return error( res, result.message );
-    } catch ( err ) {
-        return serverError( res, err );
-    }
-}
-
 exports.getUserProfile = async ( req, res ) => {
     try {
         const result = await authService.getUserProfile( req.user );

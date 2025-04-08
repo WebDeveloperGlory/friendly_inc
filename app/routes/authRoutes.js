@@ -12,7 +12,6 @@ router.post( '/login/rider', controller.riderLogin );
 router.post( '/complete-password-reset', authenticateUser, controller.completePasswordReset);
 router.post( '/change-password', authenticateUser, controller.changePassword );
 router.post( '/generate-otp', authenticateUser, controller.resendOtp );
-router.post( '/register/staff', authenticateUser, controller.registerAdministratorOrRider );
 // router.post( '/register/seller', controller.registerSeller );
 router.get( '/profile', authenticateUser, controller.getUserProfile );
 

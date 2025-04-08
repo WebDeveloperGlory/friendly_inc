@@ -49,6 +49,9 @@ exports.completeEnrollment = async ({ otp, email, password, gender, username, ph
     foundUser.phone = phone;
     await foundUser.save();
 
+    // Generate jwt
+    const token = generateToken( foundUser );
+
     const user = {
         id: foundUser._id,
         email: foundUser.email,
@@ -58,7 +61,7 @@ exports.completeEnrollment = async ({ otp, email, password, gender, username, ph
     }
 
     // Return success
-    return { success: true, message: 'User Registered Successfully', data: user };
+    return { success: true, message: 'User Registered Successfully', data: { user, token } };
 }
 
 // exports.registerSeller = async ({ personal_phone, personal_email, personal_name, store_name, public_phone, public_email, physical_location, store_category }) => {
@@ -177,38 +180,6 @@ exports.getUserProfile = async ({ userId }) => {
 
     // Return success
     return { success: true, message: 'User Aquired', data: foundUser };
-}
-
-exports.registerAdministratorOrRider = async ({ name, username, password, phone_number, task }) => {
-    // Define accepted tasks and check if task was passed in
-    const acceptedTasks = ['administrator', 'rider']
-    if( !task || !acceptedTasks.includes( task ) ) return { success: false, message: 'Invalid Task' };
-
-    // Check if user passed in a password
-    if( !password ) return { success: false, message: 'Password Required' }
-
-    // Check task and register accordingly
-    let registeredUser;
-
-    if( task === 'administrator' ) {
-        registeredUser = await db.Admin.create({ name, username, phone_number });
-        registeredUser.passsword = password;
-        await registeredUser.save();
-    } else if( task === 'rider' ) {
-        registeredUser = await db.Rider.create({ name, username, phone_number });
-        registeredUser.password = password;
-        await registeredUser.save();
-    }
-
-    const user = {
-        name: registeredUser.name, 
-        username: registeredUser.username, 
-        phone_number: registeredUser.phone_number,
-        isActive: task === 'rider' ? registeredUser.isActive : 'inapplicable'
-    }
-
-    // Return success
-    return { success: true, message: `${ task.toUpperCase() } Created`, data: user };
 }
 
 exports.adminLogin = async ({ username, password }) => {
