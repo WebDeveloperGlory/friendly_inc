@@ -1,6 +1,10 @@
 const db = require('../config/db')
 
 exports.getRiderDashboard = async ({ userId }) => {
+    // Check if user is a rider
+    const foundRider = await db.Rider.findById( userId );
+    if( !foundRider ) return { success: false, message: 'Unauthorized User' }
+
     const totalCompletedOrders = await db.Order.countDocuments({ order_status: 'delivered' });
     const totalRiderCompletedOrders = await db.Order.countDocuments({ order_status: 'delivered', assigned_rider_id: userId });
     const totalRiderCancelledOrders = await db.Order.countDocuments({ order_status: 'cancelled', assigned_rider_id: userId });
