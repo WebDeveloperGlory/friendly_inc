@@ -6,7 +6,9 @@ const router = Router();
 
 router.post( '/initiate-signup', controller.initiateEnrollment );
 router.post( '/complete-signup', controller.completeEnrollment );
-router.post( '/login', controller.loginUser );
+router.post( '/login/user', controller.loginUser );
+router.post( '/login/admin', controller.adminLogin );
+router.post( '/login/rider', controller.riderLogin );
 router.post( '/complete-password-reset', authenticateUser, controller.completePasswordReset);
 router.post( '/change-password', authenticateUser, controller.changePassword );
 router.post( '/generate-otp', authenticateUser, controller.resendOtp );

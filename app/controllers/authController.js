@@ -129,4 +129,30 @@ exports.getUserProfile = async ( req, res ) => {
     }
 }
 
+exports.adminLogin = async ( req, res ) => {
+    try {
+        const result = await authService.adminLogin( req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.riderLogin = async ( req, res ) => {
+    try {
+        const result = await authService.riderLogin( req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 module.exports = exports;

@@ -211,4 +211,36 @@ exports.registerAdministratorOrRider = async ({ name, username, password, phone_
     return { success: true, message: `${ task.toUpperCase() } Created`, data: user };
 }
 
+exports.adminLogin = async ({ username, password }) => {
+    // Check if user exists
+    const foundAdmin = await db.Admin.findOne({ username });
+    if( !foundAdmin ) return { success: false, message: 'Invalid Username' };
+
+    // Check if password is coreect
+    const isPasswordMatch = await foundAdmin.comparePassword( password );
+    if( !isPasswordMatch ) return { success: false, message: 'Invalid Password' };
+
+    // Generate jwt
+    const token = generateToken( foundAdmin );
+
+    // Return success
+    return { success: true, message: 'Admin Logged In', data: token };
+}
+
+exports.riderLogin = async ({ username, password }) => {
+    // Check if user exists
+    const foundRider = await db.Rider.findOne({ username });
+    if( !foundRider ) return { success: false, message: 'Invalid Username' };
+
+    // Check if password is coreect
+    const isPasswordMatch = await foundRider.comparePassword( password );
+    if( !isPasswordMatch ) return { success: false, message: 'Invalid Password' };
+
+    // Generate jwt
+    const token = generateToken( foundRider );
+
+    // Return success
+    return { success: true, message: 'Admin Logged In', data: token };
+}
+
 module.exports = exports;
