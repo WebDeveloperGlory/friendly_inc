@@ -106,7 +106,7 @@ exports.registerAdministratorOrRider = async ({ name, username, password, phone_
 
     if( task === 'administrator' ) {
         registeredUser = await db.Admin.create({ name, username, phone_number });
-        registeredUser.passsword = password;
+        registeredUser.password = password;
         await registeredUser.save();
     } else if( task === 'rider' ) {
         registeredUser = await db.Rider.create({ name, username, phone_number });
