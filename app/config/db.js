@@ -12,6 +12,7 @@ module.exports.Address = require('../models/Address');
 module.exports.Admin = require('../models/Admin');
 module.exports.Brand = require('../models/Brand');
 module.exports.Category = require('../models/Category');
+module.exports.Notification = require('../models/Notification');
 module.exports.Order = require('../models/Order');
 module.exports.OrderProduct = require('../models/OrderProduct');
 module.exports.Product = require('../models/Product');

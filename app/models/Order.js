@@ -4,7 +4,7 @@ const orderSchema = new Schema({
     transaction_id: { type: String, required: true },
     order_status: { 
         type: String, 
-        enum: ['pending', 'shipped', 'delivered', 'canceled', 'returned'] 
+        enum: ['pending', 'shipped', 'delivered', 'cancelled', 'returned'] 
     },
     sum_total: { type: Number },
     user_id: { 
