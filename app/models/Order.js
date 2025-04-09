@@ -1,7 +1,6 @@
 const { Schema, default: mongoose } = require('mongoose');
 
 const orderSchema = new Schema({
-    transaction_id: { type: String, required: true },
     order_status: { 
         type: String, 
         enum: ['pending', 'shipped', 'delivered', 'cancelled', 'returned'] 

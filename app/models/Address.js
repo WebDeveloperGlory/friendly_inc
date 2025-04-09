@@ -1,6 +1,11 @@
 const { Schema, default: mongoose } = require('mongoose');
 
 const addressSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     title: {
         type: String,
         required: true,

@@ -39,6 +39,18 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Address'
     }],
+    payment_methods: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Card'
+    }],
+    cart: {
+        type: Schema.Types.ObjectId,
+        ref: 'Cart'
+    },
+    favorites: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Product'
+    }],
     otp: { type: String },
     otpExpiresAt: { type: Date },
     lastLogin: { type: Date },

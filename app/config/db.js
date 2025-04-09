@@ -11,6 +11,8 @@ mongoose.connect( URI )
 module.exports.Address = require('../models/Address');
 module.exports.Admin = require('../models/Admin');
 module.exports.Brand = require('../models/Brand');
+module.exports.Card = require('../models/Card');
+module.exports.Cart = require('../models/Cart');
 module.exports.Category = require('../models/Category');
 module.exports.Image = require('../models/Image');
 module.exports.Notification = require('../models/Notification');
