@@ -104,6 +104,13 @@ exports.getUserCart = async ({ userId }) => {
         .select('-password');
     if( !foundUser ) return { success: false, message: 'Invalid User' };
 
+    // Check if user has a cart
+    if ( !foundUser.cart ) {
+        const userCart = await db.Cart.create({ user: foundUser._id });
+        foundUser.cart = userCart._id;
+        await foundUser.save();
+    }
+
     // Get all cart items
     const userCart = await db.Cart.findOne(
         { user: userId }
