@@ -79,9 +79,9 @@ exports.addAddress = async ( req, res ) => {
     }
 }
 
-exports.getProfile = async ( req, res ) => {
+exports.addProductToCart = async ( req, res ) => {
     try {
-        const result = await userService.getProfile( req.user );
+        const result = await userService.addProductToCart( req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -92,9 +92,9 @@ exports.getProfile = async ( req, res ) => {
     }
 }
 
-exports.getProfile = async ( req, res ) => {
+exports.deleteProductFromCart = async ( req, res ) => {
     try {
-        const result = await userService.getProfile( req.user );
+        const result = await userService.deleteProductFromCart req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
