@@ -83,6 +83,8 @@
  *   post:
  *     summary: Create a new product
  *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
  *     consumes:
  *       - multipart/form-data
  *     requestBody:
@@ -160,6 +162,8 @@
  *   post:
  *     summary: Update an existing product
  *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: productId
@@ -235,6 +239,8 @@
  *   delete:
  *     summary: Delete a product
  *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: productId
