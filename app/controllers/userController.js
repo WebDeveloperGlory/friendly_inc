@@ -14,9 +14,9 @@ exports.getProfile = async ( req, res ) => {
     }
 }
 
-exports.getProfile = async ( req, res ) => {
+exports.getUserFavorites = async ( req, res ) => {
     try {
-        const result = await userService.getProfile( req.user );
+        const result = await userService.getUserFavorites( req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -27,9 +27,9 @@ exports.getProfile = async ( req, res ) => {
     }
 }
 
-exports.getProfile = async ( req, res ) => {
+exports.addProductToFavorites = async ( req, res ) => {
     try {
-        const result = await userService.getProfile( req.user );
+        const result = await userService.addProductToFavorites( req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -40,9 +40,9 @@ exports.getProfile = async ( req, res ) => {
     }
 }
 
-exports.getProfile = async ( req, res ) => {
+exports.removeProductFromFavorites = async ( req, res ) => {
     try {
-        const result = await userService.getProfile( req.user );
+        const result = await userService.removeProductFromFavorites( req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -53,9 +53,9 @@ exports.getProfile = async ( req, res ) => {
     }
 }
 
-exports.getProfile = async ( req, res ) => {
+exports.getUserAddresses = async ( req, res ) => {
     try {
-        const result = await userService.getProfile( req.user );
+        const result = await userService.getUserAddresses( req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -66,9 +66,9 @@ exports.getProfile = async ( req, res ) => {
     }
 }
 
-exports.getProfile = async ( req, res ) => {
+exports.addAddress = async ( req, res ) => {
     try {
-        const result = await userService.getProfile( req.user );
+        const result = await userService.addAddress( req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
