@@ -29,7 +29,7 @@ exports.getUserFavorites = async ( req, res ) => {
 
 exports.addProductToFavorites = async ( req, res ) => {
     try {
-        const result = await userService.addProductToFavorites( req.user );
+        const result = await userService.addProductToFavorites( req.params, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -42,7 +42,7 @@ exports.addProductToFavorites = async ( req, res ) => {
 
 exports.removeProductFromFavorites = async ( req, res ) => {
     try {
-        const result = await userService.removeProductFromFavorites( req.user );
+        const result = await userService.removeProductFromFavorites( req.params, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -68,7 +68,20 @@ exports.getUserAddresses = async ( req, res ) => {
 
 exports.addAddress = async ( req, res ) => {
     try {
-        const result = await userService.addAddress( req.user );
+        const result = await userService.addAddress( req.user, req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.getUserCart = async ( req, res ) => {
+    try {
+        const result = await userService.getUserCart( req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -81,7 +94,7 @@ exports.addAddress = async ( req, res ) => {
 
 exports.addProductToCart = async ( req, res ) => {
     try {
-        const result = await userService.addProductToCart( req.user );
+        const result = await userService.addProductToCart( req.params, req.user, req.body );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -94,7 +107,7 @@ exports.addProductToCart = async ( req, res ) => {
 
 exports.deleteProductFromCart = async ( req, res ) => {
     try {
-        const result = await userService.deleteProductFromCart req.user );
+        const result = await userService.deleteProductFromCart req.params, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
