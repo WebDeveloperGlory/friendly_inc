@@ -107,7 +107,7 @@ exports.addProductToCart = async ( req, res ) => {
 
 exports.deleteProductFromCart = async ( req, res ) => {
     try {
-        const result = await userService.deleteProductFromCart req.params, req.user );
+        const result = await userService.deleteProductFromCart( req.params, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
