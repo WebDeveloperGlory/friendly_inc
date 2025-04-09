@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const { swaggerSpecV1 } = require('./app/config/swagger');
 const { PORT, ALLOWED_ORIGINS } = require('./app/config/env');
@@ -7,6 +8,7 @@ const { PORT, ALLOWED_ORIGINS } = require('./app/config/env');
 const authRoutes = require('./app/routes/authRoutes');
 const adminRoutes = require('./app/routes/adminRoutes');
 const riderRoutes = require('./app/routes/riderRoutes');
+const productRoutes = require('./app/routes/productRoutes');
 
 const app = express();
 const APP_PORT = PORT;
@@ -31,6 +33,10 @@ app.use( express.json() );
 app.use( '/api/api-docs', swaggerUi.serve, swaggerUi.setup( swaggerSpecV1 ) );
 // END OF MIDDLEWARES //
 
+// STATIC FILES //
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// STATIC FILES //
+
 // TEST ROUTE //
 app.get( '/', ( req, res ) => {
     res.send( 'Deployed And Working with CORS for testing' );
@@ -41,6 +47,7 @@ app.get( '/', ( req, res ) => {
 app.use( '/api/auth', authRoutes );
 app.use( '/api/admin', adminRoutes );
 app.use( '/api/rider', riderRoutes );
+app.use( '/api/product', productRoutes );
 // END OF ROUTES //
 
 app.listen( PORT, () => {

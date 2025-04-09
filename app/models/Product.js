@@ -5,22 +5,14 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    product_slug: {
-        type: String,
-        required: true
-    },
-    short_description: { 
-        type: String, 
-        maxlength: 500 
-    },
     description: {
         type: String
     },
-    price_1: {
+    normal_price: {
         type: Number,
         required: true
     },
-    price_2: {
+    discounted_price: {
         type: Number
     },
     quantity: {
@@ -28,26 +20,13 @@ const productSchema = new Schema({
         required: true
     },
     main_image: {
+        type: Schema.Types.ObjectId,
+        ref: 'Image'
+    },
+    category: { 
         type: String,
-    },
-    other_images: [{
-        type: String
-    }],
-    category_id: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Category' 
-    },
-    brand_id: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Brand' 
-    },
-    seller_id: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'User' 
-    },
-    isActive: {
-        type: Boolean,
-        default: false
+        enum: [ 'restaurant', 'gadget store', 'super mart' ],
+        required: true
     },
     isArchived: {
         type: Boolean,
@@ -57,13 +36,6 @@ const productSchema = new Schema({
         type: String, 
         enum: ['available', 'out_of_stock', 'discontinued']
     },
-    tags: [{
-        type: String
-    }],
-    returnable: {
-        type: Boolean,
-        default: false
-    }
 }, {
     timestamps: true
 });
