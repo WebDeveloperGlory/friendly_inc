@@ -4,7 +4,7 @@ const { authenticateUser } = require('../middlewares/authMiddlewares');
 
 const router = Router();
 
-// router.get( '/profile', authenticateUser, controller.getPersonalDetails );
+router.get( '/profile', authenticateUser, controller.getProfile );
 
 router.get( '/favorites', authenticateUser,  controller.getUserFavorites );
 router.post( '/favorites/add', authenticateUser, controller.addProductToFavorites );
