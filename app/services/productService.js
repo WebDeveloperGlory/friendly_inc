@@ -98,4 +98,33 @@ exports.deleteProduct = async ({ productId }) => {
     return { success: true, message: 'Product Deleted', data: deletedProduct }
 }
 
+exports.updateProductQuantity = async ({ productId }, { quantity }) => {
+    const updatedProduct = await db.Product.findByIdAndUpdate( 
+        productId,
+        { quantity },
+        { new: true }
+    );
+    if( !updatedProduct ) return { success: false, message: 'Invalid Product' };
+
+    // Return success
+    return { success: true, message: 'Product Quantity Updated', data: updatedProduct }
+}
+
+exports.updateProductStatus = async ({ productId }, { status }) => {
+    // Check if status is valid
+    const allowedStatuses = ['available', 'out_of_stock', 'discontinued'];
+    if( !allowedStatuses.includes( status ) ) return { success: false, message: 'Invalid Status' };
+
+    // Check if product exists
+    const updatedProduct = await db.Product.findByIdAndUpdate( 
+        productId,
+        { status },
+        { new: true }
+    );
+    if( !updatedProduct ) return { success: false, message: 'Invalid Product' };
+
+    // Return success
+    return { success: true, message: 'Product Quantity Updated', data: updatedProduct }
+}
+
 module.exports = exports;

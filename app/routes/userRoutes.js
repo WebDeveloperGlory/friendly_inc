@@ -16,5 +16,10 @@ router.post( '/addresses/add', authenticateUser, controller.addAddress );
 router.get( '/cart', authenticateUser,  controller.getUserCart );
 router.post( '/cart/add', authenticateUser, controller.addProductToCart );
 router.post( '/cart/remove', authenticateUser, controller.deleteProductFromCart );
+router.post( '/cart/increase', authenticateUser, controller.increaseCartItemQuantity );
+router.post( '/cart/decrease', authenticateUser, controller.reduceCartItemQuantity );
+
+router.get( '/order', authenticateUser,  controller.getUserOrders );
+router.post( '/order', authenticateUser, controller.placeOrder );
 
 module.exports = router;

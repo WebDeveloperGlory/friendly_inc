@@ -8,7 +8,8 @@ const orderSchema = new Schema({
     sum_total: { type: Number },
     user_id: { 
         type: Schema.Types.ObjectId,
-        ref: 'User' 
+        ref: 'User',
+        required: true
     },
     address_id: { 
         type: Schema.Types.ObjectId,

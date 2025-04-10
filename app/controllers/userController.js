@@ -118,4 +118,56 @@ exports.deleteProductFromCart = async ( req, res ) => {
     }
 }
 
+exports.increaseCartItemQuantity = async ( req, res ) => {
+    try {
+        const result = await userService.increaseCartItemQuantity( req.query, req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.reduceCartItemQuantity = async ( req, res ) => {
+    try {
+        const result = await userService.reduceCartItemQuantity( req.query, req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.getUserOrders = async ( req, res ) => {
+    try {
+        const result = await userService.getUserOrders( req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.placeOrder = async ( req, res ) => {
+    try {
+        const result = await userService.placeOrder( req.user, req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 module.exports = exports;

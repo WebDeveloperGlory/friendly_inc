@@ -157,4 +157,30 @@ exports.deleteProduct = async ( req, res ) => {
     }
 }
 
+exports.updateProductQuantity = async ( req, res ) => {
+    try {
+        const result = await productService.updateProductQuantity( req.params, req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.updateProductStatus = async ( req, res ) => {
+    try {
+        const result = await productService.updateProductStatus( req.params, req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 module.exports = exports;

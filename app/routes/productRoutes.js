@@ -11,5 +11,7 @@ router.post('/', authenticateUser, hasAdminPermissions, controller.createProduct
 router.get('/:productId', controller.getSingleProduct);
 router.post('/:productId/update',authenticateUser, hasAdminPermissions, imageService.uploadProductImage, controller.updateProduct);
 router.delete('/:productId/delete', authenticateUser, hasAdminPermissions, controller.deleteProduct);
+router.put('/:productId/quantity', authenticateUser, hasAdminPermissions, controller.updateProductQuantity);
+router.put('/:productId/status', authenticateUser, hasAdminPermissions, controller.updateProductStatus);
 
 module.exports = router;

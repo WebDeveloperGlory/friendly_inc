@@ -252,4 +252,226 @@ exports.deleteProductFromCart = async({ productId }, { userId }) => {
     return { success: true, message: 'Product removed from cart', data: refreshedCart };
 }
 
+exports.increaseCartItemQuantity = async({ productId }, { userId }) => {
+    // Check if user exists
+    const foundUser = await db.User.findById(userId).select('-password');
+    if (!foundUser) return { success: false, message: 'Invalid User' };
+    
+    // Check if user has a cart
+    if (!foundUser.cart) {
+        return { success: false, message: 'Cart not found' };
+    }
+    
+    // Get user cart
+    const userCart = await db.Cart.findById(foundUser.cart);
+    if (!userCart) return { success: false, message: 'Cart not found' };
+    
+    // Find the cart item
+    const cartItem = userCart.cartItems.find(item => item.product.toString() === productId.toString());
+    
+    // Check if product is in cart
+    if (!cartItem) {
+        return { success: false, message: 'Product not found in cart' };
+    }
+    
+    // Check if product exists and get its details
+    const foundProduct = await db.Product.findById(productId);
+    if (!foundProduct) return { success: false, message: 'Product no longer available' };
+    
+    // Check if increasing quantity would exceed available stock
+    if (foundProduct.quantity !== undefined && cartItem.quantity + 1 > foundProduct.quantity) {
+        return { 
+            success: false, 
+            message: `Cannot increase quantity. Maximum available: ${foundProduct.quantity}` 
+        };
+    }
+    
+    // Get the price of the product (use discounted price if available)
+    const productPrice = foundProduct.discounted_price || foundProduct.normal_price;
+    
+    // Increase the quantity
+    cartItem.quantity += 1;
+    
+    // Update cart total
+    userCart.total += productPrice;
+    
+    // Save cart
+    await userCart.save();
+    
+    // Refresh cart
+    const refreshedCart = await db.Cart.findById(foundUser.cart)
+        .populate({
+            path: 'cartItems.product',
+            select: 'product_name normal_price discounted_price main_image',
+            populate: {
+                path: 'main_image',
+                select: 'filename originalname path width height'
+            }
+        });
+    
+    return { success: true, message: 'Quantity increased', data: refreshedCart };
+}
+
+exports.reduceCartItemQuantity = async({ productId }, { userId }) => {
+    // Check if user exists
+    const foundUser = await db.User.findById(userId).select('-password');
+    if (!foundUser) return { success: false, message: 'Invalid User' };
+    
+    // Check if user has a cart
+    if (!foundUser.cart) {
+        return { success: false, message: 'Cart not found' };
+    }
+    
+    // Get user cart
+    const userCart = await db.Cart.findById(foundUser.cart);
+    if (!userCart) return { success: false, message: 'Cart not found' };
+    
+    // Find the cart item and its index
+    const cartItemIndex = userCart.cartItems.findIndex(item => item.product.toString() === productId.toString());
+    
+    // Check if product is in cart
+    if (cartItemIndex === -1) {
+        return { success: false, message: 'Product not found in cart' };
+    }
+    
+    const cartItem = userCart.cartItems[cartItemIndex];
+    
+    // Get product details for price calculation
+    const foundProduct = await db.Product.findById(productId);
+    if (!foundProduct) return { success: false, message: 'Product no longer available' };
+    
+    // Get the price of the product (use discounted price if available)
+    const productPrice = foundProduct.discounted_price || foundProduct.normal_price;
+    
+    // If quantity is 1, remove the item completely
+    if (cartItem.quantity === 1) {
+        // Remove the product from the cartItems array
+        userCart.cartItems.splice(cartItemIndex, 1);
+        
+        // Update cart total
+        userCart.total -= productPrice;
+    } else {
+        // Decrease the quantity
+        cartItem.quantity -= 1;
+        
+        // Update cart total
+        userCart.total -= productPrice;
+    }
+    
+    // Ensure total doesn't go below zero due to calculation errors
+    if (userCart.total < 0) userCart.total = 0;
+    
+    // Save cart
+    await userCart.save();
+    
+    // Refresh cart
+    const refreshedCart = await db.Cart.findById(foundUser.cart)
+        .populate({
+            path: 'cartItems.product',
+            select: 'product_name normal_price discounted_price main_image',
+            populate: {
+                path: 'main_image',
+                select: 'filename originalname path width height'
+            }
+        });
+    
+    return { success: true, message: 'Quantity reduced', data: refreshedCart };
+}
+
+exports.getUserOrders = async ({ userId }) => {
+    // Check if order exists
+    const foundOrders = await db.Order.find({ user_id: userId });
+
+    // Return success
+    return { success: true, message: 'User Orders Acquired', data: foundOrders };
+}
+
+exports.placeOrder = async({ userId }, { addressId }) => {
+    // Get user cart
+    const userCart = await db.Cart.findOne({ user: userId });
+    if (!userCart) return { success: false, message: 'Invalid Cart' };
+    if (userCart.cartItems.length === 0) return { success: false, message: 'No Items In Cart' };
+
+    // Check if address exists
+    const foundAddress = await db.Address.findById(addressId);
+    if (!foundAddress) return { success: false, message: 'Invalid Address' };
+
+    // Validate product quantities before creating the order
+    const quantityValidation = await Promise.all(userCart.cartItems.map(async (item) => {
+        const product = await db.Product.findById(item.product);
+        if (!product) {
+            return { valid: false, message: `Product no longer available` };
+        }
+        
+        if (product.quantity < item.quantity) {
+            return { 
+                valid: false, 
+                message: `Insufficient stock for ${product.product_name}. Only ${product.quantity} available.` 
+            };
+        }
+        
+        return { valid: true };
+    }));
+    
+    // Check if any validation failed
+    const invalidItem = quantityValidation.find(item => !item.valid);
+    if (invalidItem) {
+        return { success: false, message: invalidItem.message };
+    }
+
+    // Create order
+    const createdOrder = await db.Order.create({ 
+        user_id: userId, 
+        order_status: 'pending',
+        address_id: foundAddress._id,
+        order_products: [],
+        sum_total: userCart.total
+    });
+
+    // Map through cart items
+    const updateOrderProducts = userCart.cartItems.map(async (item) => {
+        // Get product details
+        const foundProduct = await db.Product.findById(item.product).select('product_name quantity discounted_price normal_price');
+        
+        // Create order product
+        const createdOrderProduct = await db.OrderProduct.create({
+            order_id: createdOrder._id,
+            product_id: item.product,
+            quantity: item.quantity,
+            product_price: foundProduct.discounted_price || foundProduct.normal_price
+        });
+        
+        if (!createdOrderProduct) {
+            throw new Error('Error Creating Order Product');
+        }
+
+        // Update product quantity (reduce inventory)
+        foundProduct.quantity -= item.quantity;
+        await foundProduct.save();
+        
+        // Return the order product ID for adding to order
+        return createdOrderProduct._id;
+    });
+
+    try {
+        // Wait for all order products to be created and get their IDs
+        const orderProductIds = await Promise.all(updateOrderProducts);
+        
+        // Add product IDs to order
+        createdOrder.order_products = orderProductIds;
+        await createdOrder.save();
+        
+        // Clear user's cart after successful order
+        userCart.cartItems = [];
+        userCart.total = 0;
+        await userCart.save();
+        
+        // Return success
+        return { success: true, message: 'Order Created', data: createdOrder };
+    } catch (error) {
+        // Handle errors (ideally would include rollbacks in production)
+        return { success: false, message: error.message || 'Error processing order' };
+    }
+}
+
 module.exports = exports;
