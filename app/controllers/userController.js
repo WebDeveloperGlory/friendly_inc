@@ -29,7 +29,7 @@ exports.getUserFavorites = async ( req, res ) => {
 
 exports.addProductToFavorites = async ( req, res ) => {
     try {
-        const result = await userService.addProductToFavorites( req.params, req.user );
+        const result = await userService.addProductToFavorites( req.query, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -42,7 +42,7 @@ exports.addProductToFavorites = async ( req, res ) => {
 
 exports.removeProductFromFavorites = async ( req, res ) => {
     try {
-        const result = await userService.removeProductFromFavorites( req.params, req.user );
+        const result = await userService.removeProductFromFavorites( req.query, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -94,7 +94,7 @@ exports.getUserCart = async ( req, res ) => {
 
 exports.addProductToCart = async ( req, res ) => {
     try {
-        const result = await userService.addProductToCart( req.params, req.user, req.body );
+        const result = await userService.addProductToCart( req.query, req.user, req.body );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -107,7 +107,7 @@ exports.addProductToCart = async ( req, res ) => {
 
 exports.deleteProductFromCart = async ( req, res ) => {
     try {
-        const result = await userService.deleteProductFromCart( req.params, req.user );
+        const result = await userService.deleteProductFromCart( req.query, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
