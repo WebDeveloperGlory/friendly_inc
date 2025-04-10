@@ -3,6 +3,8 @@
  * tags:
  *   - name: Products
  *     description: Product management endpoints
+ *   - name: Product - Management
+ *     description: Product inventory and status management
  */
 
 // ==================== PRODUCT OPERATIONS ==================== //
@@ -279,6 +281,138 @@
  *                   example: Invalid Product
  */
 
+// ==================== PRODUCT QUANTITY MANAGEMENT ==================== //
+
+/**
+ * @swagger
+ * /product/{productId}/quantity:
+ *   put:
+ *     summary: Update product quantity
+ *     tags: [Product - Management]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the product to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - quantity
+ *             properties:
+ *               quantity:
+ *                 type: integer
+ *                 minimum: 0
+ *                 example: 50
+ *                 description: New inventory quantity
+ *     responses:
+ *       200:
+ *         description: Product quantity updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Product Quantity Updated
+ *                 data:
+ *                   $ref: "#/components/schemas/Product"
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid Product
+ *       401:
+ *         description: Unauthorized (requires admin privileges)
+ *       403:
+ *         description: Forbidden (admin permissions required)
+ */
+
+// ==================== PRODUCT STATUS MANAGEMENT ==================== //
+
+/**
+ * @swagger
+ * /product/{productId}/status:
+ *   put:
+ *     summary: Update product status
+ *     tags: [Product - Management]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the product to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [available, out_of_stock, discontinued]
+ *                 example: "out_of_stock"
+ *                 description: New product status
+ *     responses:
+ *       200:
+ *         description: Product status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Product Status Updated
+ *                 data:
+ *                   $ref: "#/components/schemas/Product"
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               invalidProduct:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid Product
+ *               invalidStatus:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid Status
+ *       401:
+ *         description: Unauthorized (requires admin privileges)
+ *       403:
+ *         description: Forbidden (admin permissions required)
+ */
+
 /**
  * @swagger
  * components:
@@ -382,4 +516,10 @@
  *           type: string
  *           format: date-time
  *           example: "2023-01-01T00:00:00Z"
+ *
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */
