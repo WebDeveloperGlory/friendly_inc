@@ -9,6 +9,8 @@
  *     description: User address management
  *   - name: User - Cart
  *     description: User shopping cart operations
+ *   - name: User - Orders
+ *     description: User order management
  */
 
 // ==================== PROFILE MANAGEMENT ==================== //
@@ -366,6 +368,202 @@
  *         description: Unauthorized access
  */
 
+// ==================== CART QUANTITY MANAGEMENT ==================== //
+
+/**
+ * @swagger
+ * /user/cart/increase:
+ *   post:
+ *     summary: Increase product quantity in cart
+ *     tags: [User - Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the product to increase quantity
+ *     responses:
+ *       200:
+ *         description: Product quantity increased successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Quantity increased
+ *                 data:
+ *                   $ref: "#/components/schemas/Cart"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               noCart:
+ *                 value:
+ *                   success: false
+ *                   message: Cart not found
+ *               noProduct:
+ *                 value:
+ *                   success: false
+ *                   message: Product not found in cart
+ *               insufficientStock:
+ *                 value:
+ *                   success: false
+ *                   message: Cannot increase quantity. Maximum available: 5
+ *       401:
+ *         description: Unauthorized access
+ */
+
+/**
+ * @swagger
+ * /user/cart/decrease:
+ *   post:
+ *     summary: Decrease product quantity in cart
+ *     tags: [User - Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the product to decrease quantity
+ *     responses:
+ *       200:
+ *         description: Product quantity decreased successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Quantity reduced
+ *                 data:
+ *                   $ref: "#/components/schemas/Cart"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               noCart:
+ *                 value:
+ *                   success: false
+ *                   message: Cart not found
+ *               noProduct:
+ *                 value:
+ *                   success: false
+ *                   message: Product not found in cart
+ *       401:
+ *         description: Unauthorized access
+ */
+
+// ==================== ORDER MANAGEMENT ==================== //
+
+/**
+ * @swagger
+ * /user/order:
+ *   get:
+ *     summary: Get user's orders
+ *     tags: [User - Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: User Orders Acquired
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/Order"
+ *       401:
+ *         description: Unauthorized access
+ */
+
+/**
+ * @swagger
+ * /user/order:
+ *   post:
+ *     summary: Place a new order
+ *     tags: [User - Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - addressId
+ *             properties:
+ *               addressId:
+ *                 type: string
+ *                 example: "507f1f77bcf86cd799439013"
+ *                 description: ID of the address to use for this order
+ *     responses:
+ *       200:
+ *         description: Order placed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Order Created
+ *                 data:
+ *                   $ref: "#/components/schemas/Order"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               noCart:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid Cart
+ *               emptyCart:
+ *                 value:
+ *                   success: false
+ *                   message: No Items In Cart
+ *               invalidAddress:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid Address
+ *               insufficientStock:
+ *                 value:
+ *                   success: false
+ *                   message: Insufficient stock for Product X. Only 2 available.
+ *       401:
+ *         description: Unauthorized access
+ */
+
 /**
  * @swagger
  * components:
@@ -482,6 +680,61 @@
  *               quantity:
  *                 type: integer
  *                 example: 2
+ *         total:
+ *           type: number
+ *           example: 299.98
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-01-01T00:00:00Z"
+ * 
+ *     Order:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439015"
+ *         user_id:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439011"
+ *         address_id:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439013"
+ *         order_status:
+ *           type: string
+ *           enum: [pending, processing, shipped, delivered, cancelled]
+ *           example: "pending"
+ *         order_products:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: ["507f1f77bcf86cd799439016", "507f1f77bcf86cd799439017"]
+ *         sum_total:
+ *           type: number
+ *           example: 299.98
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-01-01T00:00:00Z"
+ * 
+ *     OrderProduct:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439016"
+ *         order_id:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439015"
+ *         product_id:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439012"
+ *         quantity:
+ *           type: integer
+ *           example: 2
+ *         product_price:
+ *           type: number
+ *           example: 149.99
  *         createdAt:
  *           type: string
  *           format: date-time
