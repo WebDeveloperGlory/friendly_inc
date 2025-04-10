@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 
 const riderSchema = new Schema({
     name: { type: String, required: true },
+    email: { type: String },
     username: { type: String, required: true, unique: true },
     password: { type: String },
     isActive: { type: Boolean, default: false },

@@ -100,7 +100,7 @@ exports.loginUser = async ({ email, password }) => {
 
 exports.initiatePasswordReset = async ({ email }) => {
     // Find user in database
-    const foundUser = await db.User.findOne( email );
+    const foundUser = await db.User.findOne({ email });
     if( !foundUser ) return { success: false, message: 'User Not Found' };
 
     // Set OTP
@@ -115,7 +115,7 @@ exports.initiatePasswordReset = async ({ email }) => {
 
 exports.completePasswordReset = async ( { email, otp, newPassword, confirmNewPassword } ) => {
     // Find user in database
-    const foundUser = await db.User.findOne( email );
+    const foundUser = await db.User.findOne({ email });
     if( !foundUser ) return { success: false, message: 'User Not Found' };
 
     // Check validity of otp
@@ -182,10 +182,15 @@ exports.getUserProfile = async ({ userId }) => {
     return { success: true, message: 'User Aquired', data: foundUser };
 }
 
-exports.adminLogin = async ({ username, password }) => {
+exports.adminLogin = async ({ username, email, password }) => {
     // Check if user exists
-    const foundAdmin = await db.Admin.findOne({ username });
-    if( !foundAdmin ) return { success: false, message: 'Invalid Username' };
+    const foundAdmin = await db.Admin.findOne({ 
+        $or: [
+            { username },
+            { email }
+        ]
+    });
+    if( !foundAdmin ) return { success: false, message: 'Invalid Username/Email' };
 
     // Check if password is coreect
     const isPasswordMatch = await foundAdmin.comparePassword( password );
@@ -198,9 +203,14 @@ exports.adminLogin = async ({ username, password }) => {
     return { success: true, message: 'Admin Logged In', data: token };
 }
 
-exports.riderLogin = async ({ username, password }) => {
+exports.riderLogin = async ({ username, email, password }) => {
     // Check if user exists
-    const foundRider = await db.Rider.findOne({ username });
+    const foundRider = await db.Rider.findOne({ 
+        $or: [
+            { username },
+            { email }
+        ]
+    });
     if( !foundRider ) return { success: false, message: 'Invalid Username' };
 
     // Check if password is coreect

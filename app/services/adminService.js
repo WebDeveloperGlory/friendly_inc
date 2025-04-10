@@ -93,7 +93,7 @@ exports.editPersonalDetails = async ({ userId }, { username, name, phone_number 
     return { success: true, message: 'Admin Details Updated', data: foundAdmin }
 }
 
-exports.registerAdministratorOrRider = async ({ name, username, password, phone_number, task }) => {
+exports.registerAdministratorOrRider = async ({ name, username, email, password, phone_number, task }) => {
     // Define accepted tasks and check if task was passed in
     const acceptedTasks = ['administrator', 'rider']
     if( !task || !acceptedTasks.includes( task ) ) return { success: false, message: 'Invalid Task' };
@@ -105,11 +105,11 @@ exports.registerAdministratorOrRider = async ({ name, username, password, phone_
     let registeredUser;
 
     if( task === 'administrator' ) {
-        registeredUser = await db.Admin.create({ name, username, phone_number });
+        registeredUser = await db.Admin.create({ name, email, username, phone_number });
         registeredUser.password = password;
         await registeredUser.save();
     } else if( task === 'rider' ) {
-        registeredUser = await db.Rider.create({ name, username, phone_number });
+        registeredUser = await db.Rider.create({ name, email, username, phone_number });
         registeredUser.password = password;
         await registeredUser.save();
     }

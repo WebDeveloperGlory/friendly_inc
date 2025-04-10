@@ -180,6 +180,9 @@
  *               username:
  *                 type: string
  *                 example: jane_rider
+ *               email:
+ *                 type: string
+ *                 example: jane@example.com
  *               password:
  *                 type: string
  *                 example: securePassword123
