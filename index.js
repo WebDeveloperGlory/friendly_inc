@@ -10,6 +10,7 @@ const adminRoutes = require('./app/routes/adminRoutes');
 const riderRoutes = require('./app/routes/riderRoutes');
 const productRoutes = require('./app/routes/productRoutes');
 const userRoutes = require('./app/routes/userRoutes');
+const orderRoutes = require('./app/routes/orderRoutes');
 
 const app = express();
 const APP_PORT = PORT;
@@ -50,6 +51,7 @@ app.use( '/api/admin', adminRoutes );
 app.use( '/api/rider', riderRoutes );
 app.use( '/api/product', productRoutes );
 app.use( '/api/user', userRoutes );
+app.use( '/api/order', orderRoutes );
 // END OF ROUTES //
 
 app.listen( PORT, () => {
