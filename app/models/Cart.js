@@ -14,7 +14,8 @@ const cartSchema = new Schema({
             type: Number,
             required: true
         }
-    }]
+    }],
+    total: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model( 'Cart', cartSchema );

@@ -63,7 +63,7 @@ exports.removeProductFromFavorites = async({ productId }, { userId }) => {
     );
 
     // Return success
-    return { success: true, message: 'Product Added To Favorites', data: updatedUser.favorites }
+    return { success: true, message: 'Product Removed From Favorites', data: updatedUser.favorites }
 }
 
 exports.getUserAddresses = async ({ userId }) => {
@@ -135,10 +135,18 @@ exports.addProductToCart = async({ productId }, { userId }, { quantity }) => {
     // Check if product exists
     const foundProduct = await db.Product.findById( productId );
     if( !foundProduct ) return { success: false, message: 'Invalid Product' };
+    
+    // Check if product has quantity field and it's sufficient
+    if (foundProduct.quantity !== undefined && quantity > foundProduct.quantity) {
+        return { 
+            success: false, 
+            message: `Insufficient stock. Only ${foundProduct.quantity} items available.` 
+        };
+    }
 
     // Add check if user has a cart
     if( !foundUser.cart ) {
-        const userCart = await db.Cart.create({ user: foundUser._id });
+        const userCart = await db.Cart.create({ user: foundUser._id, total: 0 });
         foundUser.cart = userCart._id;
         await foundUser.save();
     }
@@ -149,15 +157,36 @@ exports.addProductToCart = async({ productId }, { userId }, { quantity }) => {
     
     // Check if product is in cart
     const productInCart = cartItems.some( item => item.product._id === foundProduct._id );
+    
+    // Get the price of the product (use discounted price if available)
+    const productPrice = foundProduct.discounted_price || foundProduct.normal_price;
 
     if( productInCart ) {
         // Find the cart item for the given product
         const cartItem = userCart.cartItems.find(item => item.product._id.toString() === productId.toString());
+        
+        // Check if adding more would exceed available quantity
+        const newQuantity = cartItem.quantity + quantity;
+        if (foundProduct.quantity !== undefined && newQuantity > foundProduct.quantity) {
+            return { 
+                success: false, 
+                message: `Cannot add ${quantity} more items. Only ${foundProduct.quantity - cartItem.quantity} more available.` 
+            };
+        }
 
+        // Calculate price difference for updating total
+        const priceDifference = productPrice * quantity;
+        
         // Increase the quantity of the product
-        cartItem.quantity += quantity;
+        cartItem.quantity = newQuantity;
+        
+        // Update cart total
+        userCart.total += priceDifference;
     } else {
         userCart.cartItems.push({ product: foundProduct._id, quantity });
+        
+        // Update cart total with new item
+        userCart.total += productPrice * quantity;
     }
 
     // Save cart
@@ -188,6 +217,19 @@ exports.deleteProductFromCart = async({ productId }, { userId }) => {
 
     if (productIndex === -1) {
         return { success: false, message: 'Product not found in cart' };
+    }
+    
+    // Get the product details to calculate price reduction
+    const cartItem = cart.cartItems[productIndex];
+    const product = await db.Product.findById(productId);
+    
+    if (product) {
+        const productPrice = product.discounted_price || product.normal_price;
+        // Reduce the cart total by the price of the removed items
+        cart.total -= productPrice * cartItem.quantity;
+        
+        // Ensure total doesn't go below zero due to calculation errors
+        if (cart.total < 0) cart.total = 0;
     }
 
     // Remove the product from the cartItems array
