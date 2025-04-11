@@ -1,9 +1,17 @@
 const db = require('../config/db');
 const imageService = require('./imageService');
 
-exports.getAllProducts = async () => {
+exports.getAllProducts = async ({ categoryName }) => {
+    const allowedCategories = [ 'restaurant', 'gadget store', 'super mart' ];
+
+    // Build filter
+    const filter = {};
+    if (categoryName && allowedCategories.includes(categoryName.toLowerCase())) {
+        filter.category = categoryName.toLowerCase();
+    }
+
     // Get all products
-    const allProducts = await db.Product.find()
+    const allProducts = await db.Product.find(filter)
         .populate({
             path: 'main_image',
             select: 'filename originalname path width height'
