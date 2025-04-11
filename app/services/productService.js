@@ -16,7 +16,7 @@ exports.getAllProducts = async () => {
 exports.getProductsByCategory = async ({ categoryName }) => {
     // Check if categoryName is correct
     const allowedCategories = [ 'restaurant', 'gadget store', 'super mart' ];
-    if( !allowedCategories.includes( categoryName ) ) return { success: false, message: 'Invalid Category' );
+    if( !allowedCategories.includes( categoryName ) ) return { success: false, message: 'Invalid Category' };
 
     // Get all products
     const allProducts = await db.Product.find({ category: categoryName });
