@@ -13,8 +13,15 @@
  * @swagger
  * /product:
  *   get:
- *     summary: Get all products
+ *     summary: Get all products, optionally filtered by category
  *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: categoryName
+ *         schema:
+ *           type: string
+ *           enum: [restaurant, gadget store, super mart]
+ *         description: Optional category name to filter products by
  *     responses:
  *       200:
  *         description: Products retrieved successfully
@@ -28,7 +35,7 @@
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: All Products Acquired
+ *                   example: Products acquired
  *                 data:
  *                   type: array
  *                   items:
