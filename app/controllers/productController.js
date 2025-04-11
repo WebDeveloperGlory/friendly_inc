@@ -15,6 +15,19 @@ exports.getAllProducts = async ( req, res ) => {
     }
 }
 
+exports.getProductsByCategory = async ( req, res ) => {
+    try {
+        const result = await productService.getProductsByCategory( req.params );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 exports.getSingleProduct = async ( req, res ) => {
     try {
         const result = await productService.getSingleProduct( req.params );
