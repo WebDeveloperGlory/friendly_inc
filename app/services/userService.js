@@ -103,13 +103,20 @@ exports.deleteAddress = async ({ addressId }, { userId }) => {{
     const foundUser = await db.User.findById( userId ).select('-password');
     if( !foundUser ) return { success: false, message: 'Invalid User' };
 
-    const deletedAddress = await db.Address.findOneAndDelete(
-        { _id: addressId, user: foundUser._id }
+    // Check if address exists
+    const foundAddress = await db.Address.findOne({ _id: addressId, user: foundUser._id });
+    if( !foundAddress ) return { success: false, message: 'Invalid Address' };
+
+    // Delete address
+    await db.Address.findByIdAndDelete( addressId );
+    const updatedUser = await db.User.findByIdAndUpdate(
+        userId,
+        { $pull: { addresses: addressId } },
+        { new: true }
     );
-    if( !deletedAddress ) return { success: false, message: 'Invalid Address' };
 
     // Return success
-    return { success: true, message: 'Address Deleted Successfully', data: deletedAddress }
+    return { success: true, message: 'Address Deleted Successfully', data: updatedUser }
 }};
 
 exports.getUserCart = async ({ userId }) => {
