@@ -251,6 +251,56 @@
  *         description: Unauthorized access
  */
 
+/**
+ * @swagger
+ * /user/addresses/remove:
+ *   post:
+ *     summary: Delete a user address
+ *     tags: [User - Addresses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: addressId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the address to delete
+ *     responses:
+ *       200:
+ *         description: Address deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Address Deleted Successfully
+ *                 data:
+ *                   $ref: "#/components/schemas/User"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               invalidUser:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid User
+ *               invalidAddress:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid Address
+ *       401:
+ *         description: Unauthorized access
+ *       500:
+ *         description: Server error
+ */
+
 // ==================== CART MANAGEMENT ==================== //
 
 /**
