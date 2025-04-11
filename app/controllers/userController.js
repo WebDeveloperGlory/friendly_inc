@@ -79,6 +79,19 @@ exports.addAddress = async ( req, res ) => {
     }
 }
 
+exports.deleteAddress = async ( req, res ) => {
+    try {
+        const result = await userService.deleteAddress( req.query, req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 exports.getUserCart = async ( req, res ) => {
     try {
         const result = await userService.getUserCart( req.user );
