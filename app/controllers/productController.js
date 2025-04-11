@@ -4,7 +4,7 @@ const { success, error, serverError } = require('../utils/responseUtils');
 
 exports.getAllProducts = async ( req, res ) => {
     try {
-        const result = await productService.getAllProducts();
+        const result = await productService.getAllProducts( req.query );
 
         if( result.success ) {
             return success( res, result.message, result.data );
