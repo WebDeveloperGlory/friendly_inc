@@ -8,7 +8,6 @@ const router = Router();
 
 router.get('/', controller.getAllProducts);
 router.post('/', authenticateUser, hasAdminPermissions, controller.createProduct);
-router.get('/category/:categoryId', controller.getProductsByCategory);
 router.get('/:productId', controller.getSingleProduct);
 router.post('/:productId/update',authenticateUser, hasAdminPermissions, imageService.uploadProductImage, controller.updateProduct);
 router.delete('/:productId/delete', authenticateUser, hasAdminPermissions, controller.deleteProduct);
