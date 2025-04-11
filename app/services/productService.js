@@ -19,7 +19,7 @@ exports.getProductsByCategory = async ({ categoryName }) => {
     if( !allowedCategories.includes( categoryName ) ) return { success: false, message: 'Invalid Category' };
 
     // Get all products
-    const allProducts = await db.Product.find({ category: categoryName });
+    const allProducts = await db.Product.find({ category: categoryName })
         .populate({
             path: 'main_image',
             select: 'filename originalname path width height'
