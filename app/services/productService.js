@@ -13,6 +13,22 @@ exports.getAllProducts = async () => {
     return { success: true, message: 'All Products Acquired', data: allProducts };
 }
 
+exports.getProductsByCategory = async ({ categoryName }) => {
+    // Check if categoryName is correct
+    const allowedCategories = [ 'restaurant', 'gadget store', 'super mart' ];
+    if( !allowedCategories.includes( categoryName ) ) return { success: false, message: 'Invalid Category' );
+
+    // Get all products
+    const allProducts = await db.Product.find({ category: categoryName });
+        .populate({
+            path: 'main_image',
+            select: 'filename originalname path width height'
+        });
+
+    // Return success
+    return { success: true, message: 'All Products Acquired', data: allProducts };
+}
+
 exports.getSingleProduct = async ({ productId }) => {
     // Check if product exists
     const foundProduct = await db.Product.findById( productId )
