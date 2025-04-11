@@ -12,6 +12,7 @@ router.post( '/favorites/remove', authenticateUser, controller.removeProductFrom
 
 router.get( '/addresses', authenticateUser,  controller.getUserAddresses );
 router.post( '/addresses/add', authenticateUser, controller.addAddress );
+router.post( '/addresses/remove', authenticateUser, controller.deleteAddress );
 
 router.get( '/cart', authenticateUser,  controller.getUserCart );
 router.post( '/cart/add', authenticateUser, controller.addProductToCart );
