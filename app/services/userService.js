@@ -98,6 +98,20 @@ exports.addAddress = async ({ userId }, { title, lat, long, location, city, stat
     return { success: true, message: 'Address Added Successfully', data: createdAddress }
 }};
 
+exports.deleteAddress = async ({ addressId }, { userId }) => {{
+    // Check if user exists
+    const foundUser = await db.User.findById( userId ).select('-password');
+    if( !foundUser ) return { success: false, message: 'Invalid User' };
+
+    const deletedAddress = await db.Address.findOneAndDelete(
+        { _id: addressId, user: foundUser._id }
+    );
+    if( !deletedAddress ) return { success: false, message: 'Invalid Address' };
+
+    // Return success
+    return { success: true, message: 'Address Deleted Successfully', data: deletedAddress }
+}};
+
 exports.getUserCart = async ({ userId }) => {
     // Check if user exists
     const foundUser = await db.User.findById( userId )
