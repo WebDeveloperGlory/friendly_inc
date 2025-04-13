@@ -495,4 +495,16 @@ exports.placeOrder = async({ userId }, { addressId }) => {
     }
 }
 
+exports.getUserCards = async ({ userId }) => {
+    // Check if user exists
+    const foundUser = await db.User.findById( userId );
+    if( !foundUser ) return { success: false, message: 'Invalid User' };
+
+    // Check for users cards
+    const foundCards = db.Card.find({ user: userId });
+
+    // Return success
+    return { success: true, message: 'User Cards Acquired', data: foundCards }
+}
+
 module.exports = exports;
