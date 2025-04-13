@@ -507,4 +507,49 @@ exports.getUserCards = async ({ userId }) => {
     return { success: true, message: 'User Cards Acquired', data: foundCards }
 }
 
+exports.addCard = async ({ userId }, { cardType, cardDigits, expiryMonth, expiryYear, cardholderName }) => {{
+    // Check if card type is valid
+    const allowedCardTypes = ['Visa', 'Mastercard', 'Discover', 'Others' ];
+    if( !allowedCardTypes.includes( cardType ) ) return { success: false, message: 'Invalid Card Type' }
+
+    // Check if user exists
+    const foundUser = await db.User.findById( userId ).select('-password');
+    if( !foundUser ) return { success: false, message: 'Invalid User' };
+
+    // Create card
+    const createdCard = await db.Card.create({
+        cardType, cardDigits, expiryMonth, expiryYear, cardholderName,
+        user: foundUser._id
+    });
+    await db.User.findByIdAndUpdate(
+        userId,
+        { $addToSet: { payment_methods: createdCard._id } },
+        { new: true }
+    );
+
+    // Return success
+    return { success: true, message: 'Card Added Successfully', data: createdCard }
+}};
+
+exports.deleteCard = async ({ cardId }, { userId }) => {{
+    // Check if user exists
+    const foundUser = await db.User.findById( userId ).select('-password');
+    if( !foundUser ) return { success: false, message: 'Invalid User' };
+
+    // Check if card exists
+    const foundCard = await db.Card.findOne({ _id: cardId, user: foundUser._id });
+    if( !foundCard ) return { success: false, message: 'Invalid Address' };
+
+    // Delete card
+    await db.Card.findByIdAndDelete( cardId );
+    const updatedUser = await db.User.findByIdAndUpdate(
+        userId,
+        { $pull: { payment_methods: cardId } },
+        { new: true }
+    );
+
+    // Return success
+    return { success: true, message: 'Card Deleted Successfully', data: updatedUser }
+}};
+
 module.exports = exports;
