@@ -10,7 +10,7 @@ const cardSchema = new Schema({
         enum: ['Visa', 'Mastercard', 'Discover', 'Others' ],
         required: true
     },
-    last4: { type: Number },
+    cardDigits: { type: Number },
     expiryMonth: { type: Number },
     expiryYear: { type: Number },
     cardholderName: { type: String },
