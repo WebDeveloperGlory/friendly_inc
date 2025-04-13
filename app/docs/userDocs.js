@@ -11,6 +11,8 @@
  *     description: User shopping cart operations
  *   - name: User - Orders
  *     description: User order management
+ *   - name: User - Payment Methods
+ *     description: User payment card management
  */
 
 // ==================== PROFILE MANAGEMENT ==================== //
@@ -614,6 +616,146 @@
  *         description: Unauthorized access
  */
 
+// ==================== CARD MANAGEMENT ==================== //
+
+/**
+ * @swagger
+ * /user/cards:
+ *   get:
+ *     summary: Get user's saved payment cards
+ *     tags: [User - Payment Methods]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Cards retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: User Cards Acquired
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/Card"
+ *       401:
+ *         description: Unauthorized access
+ *       404:
+ *         description: User not found
+ */
+
+/**
+ * @swagger
+ * /user/cards/add:
+ *   post:
+ *     summary: Add a new payment card
+ *     tags: [User - Payment Methods]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - cardType
+ *               - cardDigits
+ *               - expiryMonth
+ *               - expiryYear
+ *               - cardholderName
+ *             properties:
+ *               cardType:
+ *                 type: string
+ *                 enum: [Visa, Mastercard, Discover, Others]
+ *                 example: "Visa"
+ *               cardDigits:
+ *                 type: string
+ *                 example: "4242"
+ *                 description: Last 4 digits of the card
+ *                 minLength: 4
+ *                 maxLength: 4
+ *               expiryMonth:
+ *                 type: integer
+ *                 example: 12
+ *                 minimum: 1
+ *                 maximum: 12
+ *               expiryYear:
+ *                 type: integer
+ *                 example: 2025
+ *                 minimum: 2023
+ *               cardholderName:
+ *                 type: string
+ *                 example: "John Doe"
+ *     responses:
+ *       201:
+ *         description: Card added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Card Added Successfully
+ *                 data:
+ *                   $ref: "#/components/schemas/Card"
+ *       400:
+ *         description: Invalid card type or missing fields
+ *       401:
+ *         description: Unauthorized access
+ *       404:
+ *         description: User not found
+ */
+
+/**
+ * @swagger
+ * /user/cards/remove:
+ *   post:
+ *     summary: Remove a payment card
+ *     tags: [User - Payment Methods]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the card to remove
+ *     responses:
+ *       200:
+ *         description: Card removed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Card Deleted Successfully
+ *                 data:
+ *                   $ref: "#/components/schemas/User"
+ *       400:
+ *         description: Invalid card ID
+ *       401:
+ *         description: Unauthorized access
+ *       404:
+ *         description: Card not found
+ */
+
 /**
  * @swagger
  * components:
@@ -785,6 +927,36 @@
  *         product_price:
  *           type: number
  *           example: 149.99
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-01-01T00:00:00Z"
+ *
+ *     Card:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439014"
+ *         cardType:
+ *           type: string
+ *           enum: [Visa, Mastercard, Discover, Others]
+ *           example: "Visa"
+ *         cardDigits:
+ *           type: string
+ *           example: "4242"
+ *         expiryMonth:
+ *           type: integer
+ *           example: 12
+ *         expiryYear:
+ *           type: integer
+ *           example: 2025
+ *         cardholderName:
+ *           type: string
+ *           example: "John Doe"
+ *         user:
+ *           type: string
+ *           example: "507f1f77bcf86cd799439011"
  *         createdAt:
  *           type: string
  *           format: date-time
