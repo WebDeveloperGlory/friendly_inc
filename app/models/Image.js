@@ -23,6 +23,10 @@ const imageSchema = new Schema({
     isProcessed: {
         type: Boolean,
         default: false
+    },
+    cloudinaryId: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true
