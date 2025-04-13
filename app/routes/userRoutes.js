@@ -23,4 +23,8 @@ router.post( '/cart/decrease', authenticateUser, controller.reduceCartItemQuanti
 router.get( '/order', authenticateUser,  controller.getUserOrders );
 router.post( '/order', authenticateUser, controller.placeOrder );
 
+router.get( '/cards', authenticateUser,  controller.getUserCards );
+router.post( '/cards/add', authenticateUser, controller.addCard );
+router.post( '/cards/remove', authenticateUser, controller.deleteCard );
+
 module.exports = router;
