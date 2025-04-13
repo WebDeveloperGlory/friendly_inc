@@ -538,7 +538,7 @@ exports.deleteCard = async ({ cardId }, { userId }) => {{
 
     // Check if card exists
     const foundCard = await db.Card.findOne({ _id: cardId, user: foundUser._id });
-    if( !foundCard ) return { success: false, message: 'Invalid Address' };
+    if( !foundCard ) return { success: false, message: 'Invalid Card' };
 
     // Delete card
     await db.Card.findByIdAndDelete( cardId );
