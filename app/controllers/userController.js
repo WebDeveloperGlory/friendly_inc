@@ -183,4 +183,43 @@ exports.placeOrder = async ( req, res ) => {
     }
 }
 
+exports.getUserCards = async ( req, res ) => {
+    try {
+        const result = await userService.getUserCards( req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.addCard = async ( req, res ) => {
+    try {
+        const result = await userService.addCard( req.user, req.body );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.deleteCard = async ( req, res ) => {
+    try {
+        const result = await userService.deleteCard( req.query, req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 module.exports = exports;
