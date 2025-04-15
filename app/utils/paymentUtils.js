@@ -79,3 +79,5 @@ exports.handleWebhook = async (payload) => {
 
     return { success: false, message: 'Unhandled event type' };
 };
+
+module.exports = exports;
