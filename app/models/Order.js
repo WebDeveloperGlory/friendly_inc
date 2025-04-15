@@ -15,6 +15,12 @@ const orderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Address'
     },
+    transaction_id: { type: String },
+    transaction_status: {
+        type: String,
+        enum: ['completed', 'pending'],
+        default: 'pending',
+    },
     assigned_rider_id: { 
         type: Schema.Types.ObjectId,
         ref: 'Rider'
