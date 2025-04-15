@@ -9,4 +9,8 @@ router.get( '/', authenticateUser, hasAdminPermissions, controller.getAllOrders)
 router.get( '/:orderId', authenticateUser, controller.getOneOrder );
 router.put( '/:orderId/status', authenticateUser, hasAdminPermissions, controller.updateOrderStatus );
 
+router.post('/', authenticateUser, controller.placeOrder);
+router.post('/verify-payment', authenticateUser, controller.verifyPayment);
+router.post('/paystack-webhook', controller.handleWebhook);
+
 module.exports = router;
