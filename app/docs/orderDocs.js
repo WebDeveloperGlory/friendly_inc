@@ -37,6 +37,40 @@
  *         description: Unauthorized access
  *       403:
  *         description: Forbidden (requires admin privileges)
+ *
+ *   post:
+ *     summary: Place a new order and initialize payment
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - addressId
+ *               - email
+ *             properties:
+ *               addressId:
+ *                 type: string
+ *                 description: ID of the shipping address
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email for payment receipt
+ *     responses:
+ *       200:
+ *         description: Payment initialized successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaymentInitializationResponse'
+ *       400:
+ *         description: Invalid input or payment initialization failed
+ *       401:
+ *         description: Unauthorized
  */
 
 /**
@@ -149,30 +183,40 @@
  *     Order:
  *       type: object
  *       properties:
- *         _id:
- *           type: string
- *           example: "507f1f77bcf86cd799439011"
- *         user_id:
- *           type: string
- *           example: "507f1f77bcf86cd799439012"
- *         address_id:
- *           type: string
- *           example: "507f1f77bcf86cd799439013"
  *         order_status:
  *           type: string
- *           enum: [pending, shipped, delivered, cancelled, returned]
- *           example: "shipped"
+ *           enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'payment_failed']
+ *         sum_total:
+ *           type: number
+ *         user_id:
+ *           type: string
+ *         address_id:
+ *           type: string
+ *         transaction_id:
+ *           type: string
+ *         transaction_reference:
+ *           type: string
+ *         transaction_status:
+ *           type: string
+ *           enum: ['completed', 'pending', 'failed']
+ *         payment_attempts:
+ *           type: number
  *         order_products:
  *           type: array
  *           items:
- *             $ref: "#/components/schemas/OrderProduct"
- *         sum_total:
- *           type: number
- *           example: 149.99
- *         createdAt:
+ *             type: string
+ * 
+ *     PaymentInitializationResponse:
+ *       type: object
+ *       properties:
+ *         authorization_url:
  *           type: string
- *           format: date-time
- *           example: "2023-01-01T00:00:00Z"
+ *         access_code:
+ *           type: string
+ *         reference:
+ *           type: string
+ *         order_id:
+ *           type: string
  * 
  *     DetailedOrder:
  *       type: object
@@ -329,4 +373,62 @@
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * /order/verify-payment:
+ *   post:
+ *     summary: Verify order payment
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - orderId
+ *               - reference
+ *             properties:
+ *               orderId:
+ *                 type: string
+ *                 description: ID of the order to verify
+ *               reference:
+ *                 type: string
+ *                 description: Payment reference from Paystack
+ *     responses:
+ *       200:
+ *         description: Payment verified and order processed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Payment verification failed
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /order/paystack-webhook:
+ *   post:
+ *     summary: Paystack payment webhook handler
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Webhook processed successfully
+ *       400:
+ *         description: Error processing webhook
+ *       401:
+ *         description: Unauthorized webhook call
  */
