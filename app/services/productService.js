@@ -1,13 +1,19 @@
 const db = require('../config/db');
 const imageService = require('./imageService');
 
-exports.getAllProducts = async ({ categoryName }) => {
+exports.getAllProducts = async ({ categoryName, productName }) => {
     const allowedCategories = [ 'restaurant', 'gadget store', 'super mart' ];
 
     // Build filter
     const filter = {};
     if (categoryName && allowedCategories.includes(categoryName.toLowerCase())) {
         filter.category = categoryName.toLowerCase();
+    }
+
+    // Check if product name is passed
+    if (productName) {
+        // Use case-insensitive regex to find names that include the given productName
+        filter.name = { $regex: productName, $options: 'i' };
     }
 
     // Get all products
