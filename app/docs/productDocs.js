@@ -11,20 +11,28 @@
 
 /**
  * @swagger
- * /product:
+ * /products:
  *   get:
- *     summary: Get all products, optionally filtered by category
- *     tags: [Products]
+ *     summary: Get all products
+ *     tags:
+ *       - Products
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: categoryName
  *         schema:
  *           type: string
  *           enum: [restaurant, gadget store, super mart]
- *         description: Optional category name to filter products by
+ *         description: Filter by product category (optional)
+ *       - in: query
+ *         name: productName
+ *         schema:
+ *           type: string
+ *         description: Filter by product name or partial match (case-insensitive, optional)
  *     responses:
  *       200:
- *         description: Products retrieved successfully
+ *         description: List of products
  *         content:
  *           application/json:
  *             schema:
@@ -32,14 +40,18 @@
  *               properties:
  *                 success:
  *                   type: boolean
- *                   example: true
  *                 message:
  *                   type: string
- *                   example: Products acquired
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: "#/components/schemas/Product"
+ *                     $ref: '#/components/schemas/Product'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 
 /**
