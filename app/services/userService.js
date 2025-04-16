@@ -79,6 +79,32 @@ exports.getUserAddresses = async ({ userId }) => {
     return { success: true, message: 'Addresses Acquired', data: foundUser.addresses };
 }
 
+exports.setActiveAddress = async ({ addressId }, { isActive }, { userId }) => {
+    // Check if isActive is boolean
+    if( typeof isActive !== "boolean" ) return { success: false, message: 'Invalid isActive value' };
+
+    // Check if user exists
+    const foundUser = await db.User.findById( userId ).select('-password');
+    if( !foundUser ) return { success: false, message: 'Invalid User' };
+
+    // Set previous active address as inactive
+    await db.Address.findOneAndUpdate(
+        { user: userId, isActive: true },
+        { isActive: false }
+    );
+
+    // Update address status
+    const updatedAddress = await db.Address.findOneAndUpdate(
+        { _id: addressId, user: userId },
+        { isActive },
+        { new: true }
+    );
+    if( !updatedAddress ) return { success: false, message: 'Invalid Address' }
+
+    // Return success
+    return { success: true, message: 'Active Address Updated', data: updatedAddress }
+}
+
 exports.addAddress = async ({ userId }, { title, lat, long, location, city, state }) => {{
     // Check if user exists
     const foundUser = await db.User.findById( userId ).select('-password');
