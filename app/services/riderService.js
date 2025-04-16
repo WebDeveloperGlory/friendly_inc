@@ -1,5 +1,14 @@
 const db = require('../config/db')
 
+exports.getRiderDetails = async ({ riderId }) => {
+    // Check if rider exists
+    const foundRider = await db.Rider.findById( riderId );
+    if( !foundRider ) return { success: false, message: 'Invalid Rider' };
+
+    // Return success 
+    return { success: true, message: 'Rider Details Acquired', data: foundRider }
+}
+
 exports.getRiderDashboard = async ({ userId }) => {
     // Check if user is a rider
     const foundRider = await db.Rider.findById( userId );
