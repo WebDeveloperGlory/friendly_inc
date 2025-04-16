@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const paymentUtils = require('../utils/paymentUtils');
+const callbackURL = 'https://friendly-inc.onrender.com/api/paystack/callback'
 
 exports.getAllOrders = async () => {
     // Find all orders
@@ -129,7 +130,8 @@ exports.placeOrder = async({ userId }, { addressId, email }) => {
                     value: createdOrder._id.toString()
                 }
             ]
-        }
+        },
+        callbackURL,
     );
 
     if (!paymentResponse.success) {
