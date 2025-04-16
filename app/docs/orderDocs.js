@@ -391,14 +391,10 @@
  *             type: object
  *             required:
  *               - orderId
- *               - reference
  *             properties:
  *               orderId:
  *                 type: string
  *                 description: ID of the order to verify
- *               reference:
- *                 type: string
- *                 description: Payment reference from Paystack
  *     responses:
  *       200:
  *         description: Payment verified and order processed
