@@ -66,6 +66,19 @@ exports.getUserAddresses = async ( req, res ) => {
     }
 }
 
+exports.setActiveAddress = async ( req, res ) => {
+    try {
+        const result = await userService.setActiveAddress( req.query, req.body, req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 exports.addAddress = async ( req, res ) => {
     try {
         const result = await userService.addAddress( req.user, req.body );
