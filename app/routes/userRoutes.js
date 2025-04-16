@@ -11,6 +11,7 @@ router.post( '/favorites/add', authenticateUser, controller.addProductToFavorite
 router.post( '/favorites/remove', authenticateUser, controller.removeProductFromFavorites );
 
 router.get( '/addresses', authenticateUser,  controller.getUserAddresses );
+router.post( '/addresses/active', authenticateUser,  controller.setActiveAddress );
 router.post( '/addresses/add', authenticateUser, controller.addAddress );
 router.post( '/addresses/remove', authenticateUser, controller.deleteAddress );
 
