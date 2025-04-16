@@ -1,6 +1,19 @@
 const riderService = require('../services/riderService');
 const { success, error, serverError } = require('../utils/responseUtils');
 
+exports.getAllRiders = async ( req, res ) => {
+    try {
+        const result = await riderService.getAllRiders();
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 exports.getRiderDetails = async ( req, res ) => {
     try {
         const result = await riderService.getRiderDetails( req.query );
