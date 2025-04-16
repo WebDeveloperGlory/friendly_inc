@@ -12,5 +12,6 @@ router.put( '/:orderId/status', authenticateUser, hasAdminPermissions, controlle
 router.post('/', authenticateUser, controller.placeOrder);
 router.post('/verify-payment', authenticateUser, controller.verifyPayment);
 router.post('/paystack-webhook', controller.handleWebhook);
+router.get('/paystack/callback', controller.handlePaystackCallback);
 
 module.exports = router;
