@@ -164,17 +164,18 @@ exports.placeOrder = async({ userId }, { addressId, email }) => {
     };
 };
 
-exports.verifyOrderPayment = async (orderId, reference) => {
+exports.verifyOrderPayment = async (orderId) => {
+    // Check if order exists
+        const order = await db.Order.findById(orderId);
+    if (!order) {
+        return { success: false, message: 'Order not found' };
+    };
+
     // Verify payment with Paystack
-    const verification = await paymentUtils.verifyPayment(reference);
+    const verification = await paymentUtils.verifyPayment( order.transaction_reference );
 
     if (!verification.success) {
         return { success: false, message: 'Payment verification failed' };
-    }
-
-    const order = await db.Order.findById(orderId);
-    if (!order) {
-        return { success: false, message: 'Order not found' };
     }
 
     if (verification.data.status !== 'success') {
