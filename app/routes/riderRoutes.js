@@ -5,6 +5,7 @@ const { hasRiderPermissions } = require('../middlewares/riderMiddlewares')
 
 const router = Router();
 
+router.get( '/', controller.getRiderDetails);
 router.get( '/dashboard', authenticateUser, hasRiderPermissions, controller.getRiderDashboard);
 router.put( '/availability', authenticateUser, hasRiderPermissions, controller.setAvailability );
 router.get( '/orders', authenticateUser, hasRiderPermissions, controller.getAllRiderOrders );
