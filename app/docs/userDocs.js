@@ -193,6 +193,72 @@
 
 /**
  * @swagger
+ * /user/addresses/active:
+ *   post:
+ *     summary: Set active address for user
+ *     description: |
+ *       Updates the active status of a user's address.
+ *       When setting an address as active, any previously active address will be automatically deactivated.
+ *     tags: [User - Addresses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: addressId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the address to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - isActive
+ *             properties:
+ *               isActive:
+ *                 type: boolean
+ *                 example: true
+ *                 description: Set to true to make this the active address
+ *     responses:
+ *       200:
+ *         description: Address active status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Active Address Updated
+ *                 data:
+ *                   $ref: "#/components/schemas/Address"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             examples:
+ *               invalidBoolean:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid isActive value
+ *               invalidAddress:
+ *                 value:
+ *                   success: false
+ *                   message: Invalid Address
+ *       401:
+ *         description: Unauthorized access
+ *       404:
+ *         description: User not found
+ */
+
+/**
+ * @swagger
  * /user/addresses/add:
  *   post:
  *     summary: Add new address
@@ -845,6 +911,9 @@
  *         state:
  *           type: string
  *           example: "NY"
+ *         isActive:
+ *           type: boolean
+ *           example: true
  *         user:
  *           type: string
  *           example: "507f1f77bcf86cd799439011"
