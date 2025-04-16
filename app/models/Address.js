@@ -28,6 +28,10 @@ const addressSchema = new Schema({
     state: {
         type: String,
         required: true,
+    },
+    isActive: {
+        type: Boolean,
+        default: false
     }
 });
 
