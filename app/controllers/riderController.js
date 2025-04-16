@@ -16,7 +16,7 @@ exports.getAllRiders = async ( req, res ) => {
 
 exports.getRiderDetails = async ( req, res ) => {
     try {
-        const result = await riderService.getRiderDetails( req.query );
+        const result = await riderService.getRiderDetails( req.params );
 
         if( result.success ) {
             return success( res, result.message, result.data );
