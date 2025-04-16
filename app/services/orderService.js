@@ -294,4 +294,89 @@ exports.handleWebhook = async (payload) => {
     return { success: false, message: 'Unhandled event type' };
 };
 
+exports.verifyOrderPayment = async (reference) => {
+    // Find order by transaction reference
+    const order = await db.Order.findOne({ transaction_reference: reference });
+    
+    if (!order) {
+        return { success: false, message: 'Order not found' };
+    }
+
+    // Verify the payment
+    const verification = await paymentUtils.verifyPayment(reference);
+    
+    if (!verification.success) {
+        return { success: false, message: 'Payment verification failed' };
+    }
+
+    if (verification.data.status !== 'success') {
+        // Payment failed
+        order.order_status = 'payment_failed';
+        order.transaction_status = 'failed';
+        order.payment_attempts += 1;
+        await order.save();
+
+        return { success: false, message: 'Payment not successful' };
+    }
+
+    // Payment successful - proceed with order processing
+    order.transaction_status = 'completed';
+    order.transaction_id = verification.data.id;
+    order.transaction_reference = verification.data.reference;
+    await order.save();
+
+    // Process the order items
+    try {
+        const userCart = await db.Cart.findOne({ user: order.user_id });
+
+        // Map through cart items
+        const updateOrderProducts = userCart.cartItems.map(async (item) => {
+            const foundProduct = await db.Product.findById(item.product)
+                .select('product_name quantity discounted_price normal_price');
+
+            const createdOrderProduct = await db.OrderProduct.create({
+                order_id: order._id,
+                product_id: item.product,
+                quantity: item.quantity,
+                product_price: foundProduct.discounted_price || foundProduct.normal_price
+            });
+
+            if (!createdOrderProduct) {
+                throw new Error('Error Creating Order Product');
+            }
+
+            // Update product quantity
+            foundProduct.quantity -= item.quantity;
+            await foundProduct.save();
+
+            return createdOrderProduct._id;
+        });
+
+        const orderProductIds = await Promise.all(updateOrderProducts);
+        order.order_products = orderProductIds;
+        order.order_status = 'processing';
+        await order.save();
+
+        // Clear user's cart
+        userCart.cartItems = [];
+        userCart.total = 0;
+        await userCart.save();
+
+        return { 
+            success: true, 
+            message: 'Payment verified and order processed', 
+            data: order 
+        };
+    } catch (error) {
+        // Handle processing errors
+        order.order_status = 'payment_failed';
+        await order.save();
+
+        return { 
+            success: false, 
+            message: error.message || 'Error processing order after payment' 
+        };
+    }
+};
+
 module.exports = exports;
