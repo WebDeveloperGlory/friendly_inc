@@ -3,7 +3,7 @@ const { success, error, serverError } = require('../utils/responseUtils');
 
 exports.getRiderDetails = async ( req, res ) => {
     try {
-        const result = await riderService.getRiderDetails( req.params );
+        const result = await riderService.getRiderDetails( req.query );
 
         if( result.success ) {
             return success( res, result.message, result.data );
