@@ -3,15 +3,22 @@ const db = require('../config/db');
 const { PAYSTACK_SECRET_KEY, PAYSTACK_BASE_URL } = require('../config/env');
 
 // Initialize Paystack payment
-exports.initializePayment = async (email, amount, metadata = {}) => {
+exports.initializePayment = async (email, amount, metadata = {}, callbackUrl) => {
     try {
+        const payload = {
+            email,
+            amount: amount * 100, // Convert to kobo
+            metadata
+        };
+
+        // Only add callback_url if provided
+        if (callbackUrl) {
+            payload.callback_url = callbackUrl;
+        }
+
         const response = await axios.post(
             `${PAYSTACK_BASE_URL}/transaction/initialize`,
-            {
-                email,
-                amount: amount * 100,
-                metadata
-            },
+            payload,
             {
                 headers: {
                     Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
