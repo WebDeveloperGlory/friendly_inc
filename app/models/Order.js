@@ -3,7 +3,7 @@ const { Schema, default: mongoose } = require('mongoose');
 const orderSchema = new Schema({
     order_status: { 
         type: String, 
-        enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'payment_failed'] 
+        enum: ['pending', 'verified', 'processing', 'delivered', 'cancelled', 'returned', 'payment_failed'],
     },
     sum_total: { type: Number },
     user_id: { 
