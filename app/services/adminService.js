@@ -35,7 +35,8 @@ exports.getAdminDashboardDetails = async () => {
 exports.assignRidersToOrders = async ({ orderId }, { riderId }) => {
     // Check if order exists
     const foundOrder = await db.Order.findById( orderId );
-    if( !foundOrder ) return { success: false, message: 'Invalid Order' }
+    if( !foundOrder ) return { success: false, message: 'Invalid Order' };
+    if( !foundOrder.order_status !== 'verified' ) return { success: false, message: 'Payment Not Verified' }
 
     // Check if rider exists
     const foundRider = await db.Rider.findById( riderId );
@@ -44,7 +45,7 @@ exports.assignRidersToOrders = async ({ orderId }, { riderId }) => {
     // Update order rider
     const updatedOrder = await db.Order.findByIdAndUpdate(
         orderId,
-        { assigned_rider_id: riderId },
+        { assigned_rider_id: riderId, order_status: 'processing' },
         { new: true }
     );
     const updatedRider = await db.Rider.findByIdAndUpdate(
