@@ -364,6 +364,21 @@ exports.verifyOrderPayment = async (reference) => {
         userCart.total = 0;
         await userCart.save();
 
+        // Send admin and user notifications
+        const title = 'Order Placed';
+        const adminMessage = `Order ${ order._id } Placed`;
+        const userMessage = `Your Order Has Been Placed`;
+        const type = 'Order';
+        await sendAdminNotification({
+            title, type,
+            message: adminMessage
+        });
+        await sendUserNotification({
+            title, type,
+            message: userMessage,
+            recipient_id: user._id,
+        })
+
         return { 
             success: true, 
             message: 'Payment verified and order processed', 

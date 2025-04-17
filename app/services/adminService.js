@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { sendRiderNotification, sendAdminNotification } = require('../utils/notificationUtils');
 
 exports.getAdminDashboardDetails = async () => {
     const registeredUserCount = await db.User.countDocuments();
@@ -53,6 +54,15 @@ exports.assignRidersToOrders = async ({ orderId }, { riderId }) => {
         { $addToSet: { orders: orderId } },
         { new: true }
     );
+
+    // Send admin and user notifications
+    const title = 'Order Assigned';
+    const message = `Order Assigned`;
+    const type = 'Order';
+    await sendRiderNotification({
+        title, type, message,
+        recipient_id: foundRider._id,
+    })
 
     // Return success
     return { 
