@@ -36,7 +36,7 @@ exports.assignRidersToOrders = async ({ orderId }, { riderId }) => {
     // Check if order exists
     const foundOrder = await db.Order.findById( orderId );
     if( !foundOrder ) return { success: false, message: 'Invalid Order' };
-    if( !foundOrder.order_status !== 'verified' ) return { success: false, message: 'Payment Not Verified' }
+    if( foundOrder.order_status !== 'verified' ) return { success: false, message: 'Payment Not Verified' }
 
     // Check if rider exists
     const foundRider = await db.Rider.findById( riderId );
