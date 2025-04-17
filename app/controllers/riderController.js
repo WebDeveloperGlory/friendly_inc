@@ -27,6 +27,19 @@ exports.getRiderDetails = async ( req, res ) => {
     }
 }
 
+exports.getPersonalRiderDetails = async ( req, res ) => {
+    try {
+        const result = await riderService.getPersonalRiderDetails( req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 exports.getRiderDashboard = async ( req, res ) => {
     try {
         const result = await riderService.getRiderDashboard( req.user );

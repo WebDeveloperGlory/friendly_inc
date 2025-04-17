@@ -17,6 +17,15 @@ exports.getRiderDetails = async ({ riderId }) => {
     return { success: true, message: 'Rider Details Acquired', data: foundRider }
 }
 
+exports.getPersonalRiderDetails = async ({ riderId }) => {
+    // Check if rider exists
+    const foundRider = await db.Rider.findById( riderId );
+    if( !foundRider ) return { success: false, message: 'Invalid Rider' };
+
+    // Return success 
+    return { success: true, message: 'Rider Details Acquired', data: foundRider }
+}
+
 exports.getRiderDashboard = async ({ userId }) => {
     // Check if user is a rider
     const foundRider = await db.Rider.findById( userId );
@@ -26,7 +35,7 @@ exports.getRiderDashboard = async ({ userId }) => {
     const totalRiderCompletedOrders = await db.Order.countDocuments({ order_status: 'delivered', assigned_rider_id: userId });
     const totalRiderCancelledOrders = await db.Order.countDocuments({ order_status: 'cancelled', assigned_rider_id: userId });
 
-    const recentNotifications = await db.Notification.find()
+    const recentNotifications = await db.Notification.find({ target: 'rider', recipient_id: userId })
         .sort()
         .limit( 5 );
 

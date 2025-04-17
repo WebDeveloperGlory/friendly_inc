@@ -10,7 +10,7 @@ exports.getAdminDashboardDetails = async () => {
     const totalCancelledOrders = await db.Order.countDocuments({ order_status: 'cancelled' });
     const totalCompletedOrders = await db.Order.countDocuments({ order_status: 'delivered' });
 
-    const recentNotifications = await db.Notification.find()
+    const recentNotifications = await db.Notification.find({ target: 'admin' })
         .sort({})
         .limit( 5 );
 
