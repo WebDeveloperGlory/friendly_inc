@@ -226,7 +226,7 @@ exports.verifyOrderPayment = async (orderId) => {
 
         const orderProductIds = await Promise.all(updateOrderProducts);
         order.order_products = orderProductIds;
-        order.order_status = 'processing'; // Ready for fulfillment
+        order.order_status = 'verified'; // Ready for fulfillment
         await order.save();
 
         // Clear user's cart after successful order
@@ -356,7 +356,7 @@ exports.verifyOrderPayment = async (reference) => {
 
         const orderProductIds = await Promise.all(updateOrderProducts);
         order.order_products = orderProductIds;
-        order.order_status = 'processing';
+        order.order_status = 'verified';
         await order.save();
 
         // Clear user's cart
