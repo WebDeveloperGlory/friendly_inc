@@ -1,4 +1,5 @@
-const db = require('../config/db')
+const db = require('../config/db');
+const { sendAdminNotification, sendUserNotification } = require('../utils/notificationUtils');
 
 exports.getAllRiders = async () => {
     // Get all riders
@@ -75,26 +76,77 @@ exports.getAllRiderOrders = async ({ userId }) => {
     return { success: true, message: 'All Rider Orders Acquired', data: allRiderOrder }
 }
 
-exports.getSpecificRiderOrder = async ({ orderId }) => {
+exports.getSpecificRiderOrder = async ({ orderId }, { userId }) => {
     // Check if order exists
-    const foundOrder = await db.Order.findById( orderId );
+    const foundOrder = await db.Order.findOne({ _id: orderId, assigned_rider_id: userId });
     if( !foundOrder ) return { success: false, message: 'Invalid Order' }
 
     // Return success
     return { success: true, message: 'Order Acquired', data: foundOrder }
 }
 
-exports.cancelOrder = async ({ orderId }) => {
+exports.cancelOrder = async ({ orderId }, { userId }) => {
     // Update order_status
-    const updatedOrder = await db.Order.findByIdAndUpdate(
-        orderId,
+    const updatedOrder = await db.Order.findOneAndUpdate(
+        { _id: orderId, assigned_rider_id: userId },
         { order_status: 'cancelled' },
         { new: true }
     );
     if( !updatedOrder ) return { success: false, message: 'Invalid Order' };
 
+    // Get user name and rider name
+    const rider = await db.Rider.findById( updatedOrder.assigned_rider_id ).select('username');
+    const user = await db.User.findById( updatedOrder.user_id ).select('name');
+
+    // Send admin and user notifications
+    const title = 'Order Cancelled';
+    const adminMessage = `${ user.name } Order Cancelled By ${ rider.username }`;
+    const userMessage = `Order Cancelled By ${ rider.username }`;
+    const type = 'Order';
+    await sendAdminNotification({
+        title, type,
+        message: adminMessage
+    });
+    await sendUserNotification({
+        title, type,
+        message: userMessage,
+        recipient_id: user._id,
+    })
+
     // Return success
     return { success: true, message: 'Order Cancelled', data: updatedOrder };
+}
+
+exports.completeOrder = async ({ orderId }, { userId }) => {
+    // Update order_status
+    const updatedOrder = await db.Order.findOneAndUpdate(
+        { _id: orderId, assigned_rider_id: userId },
+        { order_status: 'delivered' },
+        { new: true }
+    );
+    if( !updatedOrder ) return { success: false, message: 'Invalid Order' };
+
+    // Get user name and rider name
+    const rider = await db.Rider.findById( updatedOrder.assigned_rider_id ).select('username');
+    const user = await db.User.findById( updatedOrder.user_id ).select('name');
+
+    // Send admin and user notifications
+    const title = 'Order Delivered';
+    const adminMessage = `${ user.name } Order Delivered By ${ rider.username }`;
+    const userMessage = `Order Delivered By ${ rider.username }`;
+    const type = 'Order';
+    await sendAdminNotification({
+        title, type,
+        message: adminMessage
+    });
+    await sendUserNotification({
+        title, type,
+        message: userMessage,
+        recipient_id: user._id,
+    })
+
+    // Return success
+    return { success: true, message: 'Order Completed', data: updatedOrder };
 }
 
 module.exports = exports;

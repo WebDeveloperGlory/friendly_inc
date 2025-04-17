@@ -1,12 +1,109 @@
 /**
  * @swagger
  * tags:
+ *   - name: Rider - Management
+ *     description: Rider management and operations
  *   - name: Rider - Dashboard
  *     description: Rider dashboard statistics and overview
  *   - name: Rider - Availability
  *     description: Rider availability management
  *   - name: Rider - Orders
  *     description: Rider order management operations
+ */
+
+// ==================== RIDER OPERATIONS ==================== //
+
+/**
+ * @swagger
+ * /rider:
+ *   get:
+ *     summary: Get all riders
+ *     tags: [Rider - Management]
+ *     responses:
+ *       200:
+ *         description: List of all riders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: All Riders Acquired
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/Rider"
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /rider/profile:
+ *   get:
+ *     summary: Get authenticated rider's details
+ *     tags: [Rider - Management]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Rider details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Rider Details Acquired
+ *                 data:
+ *                   $ref: "#/components/schemas/Rider"
+ *       401:
+ *         description: Unauthorized access
+ *       403:
+ *         description: Forbidden (requires rider permissions)
+ *       404:
+ *         description: Rider not found
+ */
+
+/**
+ * @swagger
+ * /rider/profile/{riderId}:
+ *   get:
+ *     summary: Get specific rider details
+ *     tags: [Rider - Management]
+ *     parameters:
+ *       - in: path
+ *         name: riderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the rider to retrieve
+ *     responses:
+ *       200:
+ *         description: Rider details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Rider Details Acquired
+ *                 data:
+ *                   $ref: "#/components/schemas/Rider"
+ *       404:
+ *         description: Rider not found
  */
 
 // ==================== DASHBOARD OPERATIONS ==================== //
@@ -111,7 +208,7 @@
 
 /**
  * @swagger
- * /rider/orders:
+ * /rider/orders/personal:
  *   get:
  *     summary: Get all orders assigned to the rider
  *     tags: [Rider - Orders]
@@ -143,7 +240,7 @@
 
 /**
  * @swagger
- * /rider/orders/{orderId}:
+ * /rider/orders/retrieve/{orderId}:
  *   get:
  *     summary: Get specific order details
  *     tags: [Rider - Orders]
@@ -182,7 +279,7 @@
 
 /**
  * @swagger
- * /rider/orders/{orderId}:
+ * /rider/orders/cancel/{orderId}:
  *   post:
  *     summary: Cancel an order
  *     tags: [Rider - Orders]
@@ -217,6 +314,45 @@
  *         description: Order not found
  *       500:
  *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /rider/orders/complete/{orderId}:
+ *   post:
+ *     summary: Mark an order as delivered (Rider only)
+ *     tags: [Rider - Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the order to mark as delivered
+ *     responses:
+ *       200:
+ *         description: Order marked as delivered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Order Completed
+ *                 data:
+ *                   $ref: "#/components/schemas/Order"
+ *       401:
+ *         description: Unauthorized access
+ *       403:
+ *         description: Forbidden (requires rider permissions)
+ *       404:
+ *         description: Order not found or not assigned to rider
  */
 
 /**
@@ -262,7 +398,7 @@
  *           example: "507f1f77bcf86cd799439011"
  *         order_status:
  *           type: string
- *           enum: [pending, processing, shipped, delivered, cancelled]
+ *           enum: [pending, processing, shipped, delivered, cancelled, verified]
  *           example: "processing"
  *         createdAt:
  *           type: string

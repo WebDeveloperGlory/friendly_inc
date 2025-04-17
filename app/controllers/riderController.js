@@ -81,7 +81,7 @@ exports.getAllRiderOrders = async ( req, res ) => {
 
 exports.getSpecificRiderOrder = async ( req, res ) => {
     try {
-        const result = await riderService.getSpecificRiderOrder( req.params );
+        const result = await riderService.getSpecificRiderOrder( req.params, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
@@ -94,7 +94,20 @@ exports.getSpecificRiderOrder = async ( req, res ) => {
 
 exports.cancelOrder = async ( req, res ) => {
     try {
-        const result = await riderService.cancelOrder( req.params );
+        const result = await riderService.cancelOrder( req.params, req.user );
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
+exports.completeOrder = async ( req, res ) => {
+    try {
+        const result = await riderService.completeOrder( req.params, req.user );
 
         if( result.success ) {
             return success( res, result.message, result.data );
