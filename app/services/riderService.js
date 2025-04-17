@@ -47,7 +47,8 @@ exports.getRiderDashboard = async ({ userId }) => {
             totalCompletedOrders,
             totalRiderCompletedOrders,
             totalRiderCancelledOrders,
-            recentNotifications
+            recentNotifications,
+            available: foundRider.isActive,
         }
     }
 }
