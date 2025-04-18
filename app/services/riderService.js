@@ -18,9 +18,9 @@ exports.getRiderDetails = async ({ riderId }) => {
     return { success: true, message: 'Rider Details Acquired', data: foundRider }
 }
 
-exports.getPersonalRiderDetails = async ({ riderId }) => {
+exports.getPersonalRiderDetails = async ({ userId }) => {
     // Check if rider exists
-    const foundRider = await db.Rider.findById( riderId );
+    const foundRider = await db.Rider.findById( userId );
     if( !foundRider ) return { success: false, message: 'Invalid Rider' };
 
     // Return success 
