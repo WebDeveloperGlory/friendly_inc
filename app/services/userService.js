@@ -427,7 +427,32 @@ exports.reduceCartItemQuantity = async({ productId }, { userId }) => {
 
 exports.getUserOrders = async ({ userId }) => {
     // Check if order exists
-    const foundOrders = await db.Order.find({ user_id: userId });
+    const foundOrders = await db.Order.find({ user_id: userId })
+        .populate([
+            {
+                path: 'user_id',
+                select: 'username phone'
+            },
+            {
+                path: 'address_id',
+                select: 'title lat long location city state'
+            },
+            {
+                path: 'assigned_rider_id',
+                select: 'name username phone_number'
+            },
+            {
+                path: 'order_products',
+                populate: {
+                    path: 'product_id',
+                    select: 'product_name description main_image status',
+                    populate: {
+                        path: 'main_image',
+                        select: 'filename originalname path width height'
+                    }
+                }
+            },
+        ]);
 
     // Return success
     return { success: true, message: 'User Orders Acquired', data: foundOrders };
