@@ -11,16 +11,16 @@ exports.getAllRiders = async () => {
 
 exports.getRiderDetails = async ({ riderId }) => {
     // Check if rider exists
-    const foundRider = await db.Rider.findById( riderId );
+    const foundRider = await db.Rider.findById( riderId ).select('-password');
     if( !foundRider ) return { success: false, message: 'Invalid Rider' };
 
     // Return success 
     return { success: true, message: 'Rider Details Acquired', data: foundRider }
 }
 
-exports.getPersonalRiderDetails = async ({ riderId }) => {
+exports.getPersonalRiderDetails = async ({ userId }) => {
     // Check if rider exists
-    const foundRider = await db.Rider.findById( riderId );
+    const foundRider = await db.Rider.findById( userId ).select('-password');
     if( !foundRider ) return { success: false, message: 'Invalid Rider' };
 
     // Return success 
@@ -47,7 +47,8 @@ exports.getRiderDashboard = async ({ userId }) => {
             totalCompletedOrders,
             totalRiderCompletedOrders,
             totalRiderCancelledOrders,
-            recentNotifications
+            recentNotifications,
+            available: foundRider.isActive,
         }
     }
 }
