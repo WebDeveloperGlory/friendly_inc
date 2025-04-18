@@ -11,7 +11,7 @@ exports.getAllRiders = async () => {
 
 exports.getRiderDetails = async ({ riderId }) => {
     // Check if rider exists
-    const foundRider = await db.Rider.findById( riderId );
+    const foundRider = await db.Rider.findById( riderId ).select('-password');
     if( !foundRider ) return { success: false, message: 'Invalid Rider' };
 
     // Return success 
@@ -20,7 +20,7 @@ exports.getRiderDetails = async ({ riderId }) => {
 
 exports.getPersonalRiderDetails = async ({ userId }) => {
     // Check if rider exists
-    const foundRider = await db.Rider.findById( userId );
+    const foundRider = await db.Rider.findById( userId ).select('-password');
     if( !foundRider ) return { success: false, message: 'Invalid Rider' };
 
     // Return success 
