@@ -79,4 +79,17 @@ exports.registerAdministratorOrRider = async ( req, res ) => {
     }
 }
 
+exports.getAdminNotifications = async ( req, res ) => {
+    try {
+        const result = await adminService.getAdminNotifications();
+
+        if( result.success ) {
+            return success( res, result.message, result.data );
+        }
+        return error( res, result.message );
+    } catch ( err ) {
+        return serverError( res, err );
+    }
+}
+
 module.exports = exports;

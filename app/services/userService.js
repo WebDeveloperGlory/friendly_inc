@@ -578,4 +578,10 @@ exports.deleteCard = async ({ cardId }, { userId }) => {{
     return { success: true, message: 'Card Deleted Successfully', data: updatedUser }
 }};
 
+exports.getUserNotifications = async ({ userId }) => {
+    const notifications = await db.Notification.find({ target: 'user', recipient_id: userId.toString() });
+
+    return { success: true, message: 'User Notifications Acquired', data: notifications };
+}
+
 module.exports = exports;

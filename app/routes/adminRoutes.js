@@ -6,6 +6,7 @@ const { hasAdminPermissions } = require('../middlewares/adminMiddlewares');
 const router = Router();
 
 router.get( '/dashboard', authenticateUser, hasAdminPermissions, controller.getAdminDashboardDetails);
+router.get( '/notifications', authenticateUser, hasAdminPermissions, controller.getAdminNotifications);
 router.get( '/profile', authenticateUser, hasAdminPermissions, controller.getPersonalDetails );
 router.put( '/profile', authenticateUser, hasAdminPermissions, controller.editPersonalDetails );
 router.post( '/register/staff', authenticateUser, hasAdminPermissions, controller.registerAdministratorOrRider );

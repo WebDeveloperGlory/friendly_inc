@@ -136,4 +136,10 @@ exports.registerAdministratorOrRider = async ({ name, username, email, password,
     return { success: true, message: `${ task.toUpperCase() } Created`, data: user };
 }
 
+exports.getAdminNotifications = async () => {
+    const notifications = await db.Notification.find({ target: 'admin' });
+
+    return { success: true, message: 'Admin Notifications Acquired', data: notifications };
+}
+
 module.exports = exports;

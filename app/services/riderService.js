@@ -150,4 +150,10 @@ exports.completeOrder = async ({ orderId }, { userId }) => {
     return { success: true, message: 'Order Completed', data: updatedOrder };
 }
 
+exports.getRiderNotifications = async ({ userId }) => {
+    const notifications = await db.Notification.find({ target: 'rider', recipient_id: userId.toString() });
+
+    return { success: true, message: 'Rider Notifications Acquired', data: notifications };
+}
+
 module.exports = exports;

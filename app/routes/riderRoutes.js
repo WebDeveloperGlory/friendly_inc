@@ -10,6 +10,7 @@ router.get( '/profile', authenticateUser, hasRiderPermissions, controller.getPer
 router.get( '/profile/:riderId', controller.getRiderDetails);
 
 router.get( '/dashboard', authenticateUser, hasRiderPermissions, controller.getRiderDashboard);
+router.get( '/notifications', authenticateUser, hasRiderPermissions, controller.getRiderNotifications );
 router.put( '/availability', authenticateUser, hasRiderPermissions, controller.setAvailability );
 
 router.get( '/orders/personal', authenticateUser, hasRiderPermissions, controller.getAllRiderOrders );
