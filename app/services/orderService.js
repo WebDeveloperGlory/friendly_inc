@@ -1,6 +1,7 @@
 const db = require('../config/db');
 const paymentUtils = require('../utils/paymentUtils');
-const callbackURL = 'https://friendly-inc.onrender.com/api/order/paystack/callback'
+const callbackURL = 'https://friendly-inc.onrender.com/api/order/paystack/callback';
+const { sendUserNotification, sendAdminNotification } = require('../utils/notificationUtils');
 
 exports.getAllOrders = async () => {
     // Find all orders
