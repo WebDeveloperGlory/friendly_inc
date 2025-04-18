@@ -71,7 +71,32 @@ exports.setAvailability = async ({ userId }, { isActive }) => {
 
 exports.getAllRiderOrders = async ({ userId }) => {
     // Get all rider orders
-    const allRiderOrder = await db.Order.find({ assigned_rider_id: userId });
+    const allRiderOrder = await db.Order.find({ assigned_rider_id: userId })
+        .populate([
+            {
+                path: 'user_id',
+                select: 'username phone'
+            },
+            {
+                path: 'address_id',
+                select: 'title lat long location city state'
+            },
+            {
+                path: 'assigned_rider_id',
+                select: 'name username phone_number'
+            },
+            {
+                path: 'order_products',
+                populate: {
+                    path: 'product_id',
+                    select: 'product_name description main_image status',
+                    populate: {
+                        path: 'main_image',
+                        select: 'filename originalname path width height'
+                    }
+                }
+            },
+        ]);
 
     // Return succcess
     return { success: true, message: 'All Rider Orders Acquired', data: allRiderOrder }
@@ -79,7 +104,32 @@ exports.getAllRiderOrders = async ({ userId }) => {
 
 exports.getSpecificRiderOrder = async ({ orderId }, { userId }) => {
     // Check if order exists
-    const foundOrder = await db.Order.findOne({ _id: orderId, assigned_rider_id: userId });
+    const foundOrder = await db.Order.findOne({ _id: orderId, assigned_rider_id: userId })
+        .populate([
+            {
+                path: 'user_id',
+                select: 'username phone'
+            },
+            {
+                path: 'address_id',
+                select: 'title lat long location city state'
+            },
+            {
+                path: 'assigned_rider_id',
+                select: 'name username phone_number'
+            },
+            {
+                path: 'order_products',
+                populate: {
+                    path: 'product_id',
+                    select: 'product_name description main_image status',
+                    populate: {
+                        path: 'main_image',
+                        select: 'filename originalname path width height'
+                    }
+                }
+            },
+        ]);
     if( !foundOrder ) return { success: false, message: 'Invalid Order' }
 
     // Return success
