@@ -377,7 +377,7 @@ exports.verifyOrderPayment = async (reference) => {
         await sendUserNotification({
             title, type,
             message: userMessage,
-            recipient_id: user._id,
+            recipient_id: order.user_id,
         })
 
         return { 
