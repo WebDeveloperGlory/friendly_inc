@@ -116,13 +116,13 @@ exports.registerAdministratorOrRider = async ({ name, username, email, password,
     let registeredUser;
 
     if( task === 'administrator' ) {
-        registeredUser = await db.Admin.create({ name, email, username, phone_number });
-        registeredUser.password = password;
-        await registeredUser.save();
+        registeredUser = await db.Admin.create({ name, email, username, phone_number, password });
+        // registeredUser.password = password;
+        // await registeredUser.save();
     } else if( task === 'rider' ) {
-        registeredUser = await db.Rider.create({ name, email, username, phone_number });
-        registeredUser.password = password;
-        await registeredUser.save();
+        registeredUser = await db.Rider.create({ name, email, username, phone_number, password });
+        // registeredUser.password = password;
+        // await registeredUser.save();
     }
 
     const user = {
