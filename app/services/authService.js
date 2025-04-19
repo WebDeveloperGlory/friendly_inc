@@ -221,6 +221,48 @@ exports.riderLogin = async ({ username, email, password }) => {
     const token = generateToken( foundRider );
 
     // Return success
+    return { success: true, message: 'Rider Logged In', data: token };
+}
+
+exports.adminLoginAlternative = async ({ username, email, password }) => {
+    // Check if user exists
+    const foundAdmin = await db.Admin.findOne({ 
+        $or: [
+            { username },
+            { email }
+        ]
+    });
+    if(!foundAdmin) return { success: false, message: 'Invalid Username/Email' };
+
+    // Get the raw hash from the database
+    const storedHash = foundAdmin.password;
+    
+    // Try multiple comparison methods
+    let isPasswordMatch = false;
+    
+    // Method 1: Using bcrypt.compare directly
+    try {
+        isPasswordMatch = await bcrypt.compare(password, storedHash);
+        console.log("Method 1 result:", isPasswordMatch);
+    } catch (err) {
+        console.error("Method 1 error:", err);
+    }
+    
+    // Method 2: Using bcrypt.compareSync as alternative
+    try {
+        const syncResult = bcrypt.compareSync(password, storedHash);
+        console.log("Method 2 result:", syncResult);
+        if (syncResult) isPasswordMatch = true;
+    } catch (err) {
+        console.error("Method 2 error:", err);
+    }
+    
+    if(!isPasswordMatch) return { success: false, message: 'Invalid Password' };
+
+    // Generate jwt
+    const token = generateToken(foundAdmin);
+
+    // Return success
     return { success: true, message: 'Admin Logged In', data: token };
 }
 
