@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const db = require('../config/db');
 const { setOtp, verifyOtp, sendOtpEmail } = require('../utils/otpUtils');
 const { generateToken } = require('../utils/jwtUtils');
