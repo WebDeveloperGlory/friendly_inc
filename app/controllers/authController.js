@@ -118,7 +118,8 @@ exports.getUserProfile = async ( req, res ) => {
 
 exports.adminLogin = async ( req, res ) => {
     try {
-        const result = await authService.adminLogin( req.body );
+        // const result = await authService.adminLogin( req.body );
+        const result = await authService.adminLoginAlternative( req.body );
 
         if( result.success ) {
             return success( res, result.message, result.data );
